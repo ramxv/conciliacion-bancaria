@@ -27,13 +27,18 @@
                         </div>
                         <div class="col-12 pt-2">
                             <label for="inputOrden" class="form-label">Páguese a la orden de</label>
-                            <input type="text" class="form-control" id="inputOrden" placeholder="">
+                            <select class="form-select" id="inputOrden">
+                                <option selected> </option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
                         </div>
                         <div class="col-12 pt-2">
                             <label for="inputMonto" class="form-label">La suma de</label>
                             <div class="input-group">
-                                <input type="text" aria-label="First name" class="form-control" placeholder="$">
-                                <input type="text" aria-label="Last name" class="form-control" disabled>
+                                <input type="text" aria-label="Monto" class="form-control" placeholder="$">
+                                <input type="text" aria-label="Monto en Letras" class="form-control w-50" disabled>
                             </div>
                         </div>
                         <div class="col-12 pt-2">
@@ -48,7 +53,12 @@
                         <div class="row">
                             <div class="col-8">
                                 <label for="inputObjeto" class="form-label">Objeto</label>
-                                <input type="text" class="form-control" id="inputObjeto" placeholder="">
+                                <select class="form-select" id="inputObjeto">
+                                    <option selected> </option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
                             </div>
                             <div class="col-4">
                                 <label for="inputMonto" class="form-label">Monto</label>
@@ -87,6 +97,11 @@
                         </div>
                     </div>
                 </div>
+            </div>   
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center pb-3">
+                <button type="button" class="btn" id="btn-custom">Grabar</button>
+                <button type="button" class="btn" id="btn-custom">Imprimir</button>
+                <button type="button" class="btn" id="btn-custom">Nuevo</button>
             </div>
         </form>
     </div>
