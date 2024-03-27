@@ -8,56 +8,36 @@
     <title>Horizon</title>
 </head>
 <body>
-    
-  <section class="vh-100">
-    <div class="container py-5 h-100">
-      <div class="row d-flex align-items-center justify-content-center h-100">
-        <div class="col-md-8 col-lg-7 col-xl-6">
-          <img src="https://ecurater.com/wp-content/uploads/2020/10/login1.png"
-            class="img-fluid" alt="Phone image">
+  <div class="container p-3 container-custom">
+    <form class="rounded">
+      <div class="row">
+        <div class="col">
+          <img src="../assets/images/login/login-logo.png" class="img-fluid rounded-start"
+            alt="Logo de la Empresa">
         </div>
-        <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-          <form>
-            <!-- Email input -->
-            <div class="form-outline mb-4">
-              <input type="email" id="form1Example13" class="form-control form-control-lg" />
-              <label class="form-label" for="form1Example13">Email address</label>
+        <div class="col d-flex align-items-center justify-content-center">
+          <div class="w-75">
+            <h1 class="text-center pb-3">Regístrate</h1>
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="floatingInput" placeholder="nombre@ejemplo.com">
+              <label for="floatingInput">Correo Electrónico</label>
             </div>
-  
-            <!-- Password input -->
-            <div class="form-outline mb-4">
-              <input type="password" id="form1Example23" class="form-control form-control-lg" />
-              <label class="form-label" for="form1Example23">Password</label>
+            <div class="form-floating">
+              <input type="password" class="form-control" id="floatingPassword" placeholder="Contraseña">
+              <label for="floatingPassword">Contraseña</label>
             </div>
-  
-            <div class="d-flex justify-content-around align-items-center mb-4">
-              <!-- Checkbox -->
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
-                <label class="form-check-label" for="form1Example3"> Remember me </label>
-              </div>
-              <a href="#!">Forgot password?</a>
+
+            <div class="pt-4">
+              <a href="inicio.html" class="anchor">
+                <button type="button" class="btn d-block mx-auto" id="btn-custom">Acceder</button>
+              </a>  
             </div>
-  
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Sign in</button>
-  
-            <div class="divider d-flex align-items-center my-4">
-              <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-            </div>
-  
-            <a class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" href="#!"
-              role="button">
-              <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
-            </a>
-            <a class="btn btn-primary btn-lg btn-block" style="background-color: #55acee" href="#!"
-              role="button">
-              <i class="fab fa-twitter me-2"></i>Continue with Twitter</a>
-  
-          </form>
+              
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </form>
+  </div>
 </body>
+
 </html>
