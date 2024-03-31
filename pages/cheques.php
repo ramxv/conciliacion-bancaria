@@ -1,6 +1,9 @@
 <?php
 
-require "../php/db_conciliacion.php"
+require "../php/db_conciliacion.php";
+
+$consultaProveedores = $conn->query("SELECT * FROM proveedores");
+$consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 
 ?>
 
@@ -25,12 +28,14 @@ require "../php/db_conciliacion.php"
           </div>
           <div class="col-12 pt-2">
             <label for="inputOrden" class="form-label">Páguese a la orden de</label>
+
             <select class="form-select" id="inputOrden">
-              <option selected> </option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value=""></option>
+              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)) : ?>
+                <option value="<?= $row["codigo"] ?>"> <?= $row["nombre"] ?> </option>
+              <?php endwhile ?>
             </select>
+
           </div>
           <div class="col-12 pt-2">
             <label for="inputMonto" class="form-label">La suma de</label>
@@ -51,12 +56,14 @@ require "../php/db_conciliacion.php"
           <div class="row">
             <div class="col-8">
               <label for="inputObjeto" class="form-label">Objeto</label>
+
               <select class="form-select" id="inputObjeto">
-                <option selected> </option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option value=""></option>
+                <?php while ($row = $consultaObjetoGasto->fetch(PDO::FETCH_ASSOC)) : ?>
+                  <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+                <?php endwhile ?>
               </select>
+
             </div>
             <div class="col-4">
               <label for="inputMonto" class="form-label">Monto</label>
