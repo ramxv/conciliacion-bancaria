@@ -15,10 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $statement -> bindParam(":password", $_POST["password"]);
     $statement -> execute();
 
-    if ($statement->rowCount() > 0) {
-      header("Location: inicio.php");
+    if ($statement->rowCount() == 0) {
+      $error = "Credenciales inválidas. Verifica e inténtalo nuevamente.";
     } else {
-      $error = "Cédula o contraseña incorrecta. Verifica e inténtalo nuevamente.";
+      header("Location: inicio.php");
     }
   }
 }
@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/login.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script defer src="../js/script.js"></script>
   <title>Horizon</title>
 </head>
 
@@ -45,14 +46,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="col d-flex align-items-center justify-content-center">
           <div class="w-75">
             <h1 class="text-center pb-3">Iniciar Sesión</h1>
-            <p> variable </p>
             <?php if ($error) : ?>
               <p class="text-danger">
                 <?= $error ?>
               </p>
             <?php endif ?>
             <div class="form-floating mb-3">
-              <input type="cedula" class="form-control" id="floatingInput" placeholder="8-888-8888" name="cedula" autocomplete="off">
+              <input type="cedula" class="form-control" id="floatingInput" placeholder="8-888-8888" name="cedula" autocomplete="off" onkeypress="return cedulaVal(event)">
               <label for="floatingInput">Cédula</label>
             </div>
             <div class="form-floating">

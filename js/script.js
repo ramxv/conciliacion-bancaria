@@ -32,6 +32,18 @@ function soloNumeros(evento) {
     }
 }
 
+// * Función para validar el campo de cedula
+function cedulaVal(evento) {
+  var code = (evento.which) ? evento.which : evento.keycode;
+  if (code == 8) {
+      return true;
+  } else if (code == 45 || code >= 48 && code <= 57) {
+      return true;
+  } else {
+      return false;
+  }
+}
+
 // * Función acepta punto decimal en los campos de decimales
 function soloDecimal(evento) {
     var code = (evento.which) ? evento.which : evento.keycode;
