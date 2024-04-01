@@ -1,7 +1,8 @@
 <?php
+require "../php/db_conciliacion.php";
 
-require "../php/db_conciliacion.php"
-
+$consultaProveedores = $conn->query("SELECT * FROM proveedores");
+$consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 ?>
 
 <?php require "../includes/header.php" ?>
@@ -26,10 +27,10 @@ require "../php/db_conciliacion.php"
           <div class="col-12 pt-2">
             <label for="inputOrden" class="form-label">Páguese a la orden de</label>
             <select class="form-select" id="inputOrden">
-              <option selected> </option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value=""></option>
+              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)) : ?>
+                <option value="<?= $row["codigo"] ?>"> <?= $row["nombre"] ?> </option>
+              <?php endwhile ?>
             </select>
           </div>
           <div class="col-12 pt-2">
@@ -52,10 +53,10 @@ require "../php/db_conciliacion.php"
             <div class="col-8">
               <label for="inputObjeto" class="form-label">Objeto</label>
               <select class="form-select" id="inputObjeto">
-                <option selected> </option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option value=""></option>
+                <?php while ($row = $consultaObjetoGasto->fetch(PDO::FETCH_ASSOC)) : ?>
+                  <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+                <?php endwhile ?>
               </select>
             </div>
             <div class="col-4">
@@ -66,10 +67,9 @@ require "../php/db_conciliacion.php"
         </div>
       </div>
     </div>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-center pb-3">
-      <button type="button" class="btn" id="btn-custom">Grabar</button>
-      <button type="button" class="btn" id="btn-custom">Imprimir</button>
-      <button type="button" class="btn" id="btn-custom">Nuevo</button>
+    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3">
+      <button type="submit" class="btn" id="btn-custom">Grabar</button>
+      <button type="submit" class="btn" id="btn-custom">Nuevo</button>
     </div>
   </form>
 </div>
