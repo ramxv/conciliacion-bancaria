@@ -26,12 +26,14 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
           </div>
           <div class="col-12 pt-2">
             <label for="inputOrden" class="form-label">Páguese a la orden de</label>
+
             <select class="form-select" id="inputOrden">
               <option value=""></option>
               <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)) : ?>
                 <option value="<?= $row["codigo"] ?>"> <?= $row["nombre"] ?> </option>
               <?php endwhile ?>
             </select>
+
           </div>
           <div class="col-12 pt-2">
             <label for="inputMonto" class="form-label">La suma de</label>
@@ -52,12 +54,14 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
           <div class="row">
             <div class="col-8">
               <label for="inputObjeto" class="form-label">Objeto</label>
+
               <select class="form-select" id="inputObjeto">
                 <option value=""></option>
                 <?php while ($row = $consultaObjetoGasto->fetch(PDO::FETCH_ASSOC)) : ?>
                   <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
                 <?php endwhile ?>
               </select>
+
             </div>
             <div class="col-4">
               <label for="inputMonto" class="form-label">Monto</label>
