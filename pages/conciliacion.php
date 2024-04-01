@@ -1,3 +1,7 @@
+<?php
+require "../php/db_conciliacion.php";
+$consultaMeses = $conn->query("SELECT mes, nombre_mes FROM meses");
+?>
 <?php require "../includes/header.php" ?>
 
 <div class="container-fluid w-75 mt-5 p-5">
@@ -10,16 +14,23 @@
       <div class="col-2 me-3">
         <label for="inputMeses" class="form-label"><strong>Meses</strong></label>
         <select class="form-select" name="meses" id="inputMeses">
-          <option> </option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+          <option value=""></option>
+          <?php while ($row = $consultaMeses->fetch(PDO::FETCH_ASSOC)) : ?>
+            <option value="<?= $row["mes"] ?>"> <?= $row["nombre_mes"] ?> </option>
+          <?php endwhile ?>
         </select>
       </div>
 
       <div class="col-2 me-3">
-        <label for="year-input" class="form-label"><strong>Año</strong></label>
-        <input type="text" name="text" id="year-input" class="form-control">
+      <label for="inputMeses" class="form-label"><strong>Año</strong></label>
+        <select class="form-select" name="meses" id="inputMeses">
+          <option value="" selected></option>
+          <option value="01">2024</option>
+          <option value="02">2023</option>
+          <option value="03">2022</option>
+          <option value="04">2021</option>
+          <option value="05">2020</option>
+        </select>
       </div>
 
       <div class="col-3">
@@ -114,7 +125,7 @@
         <input type="saldoConsiliado" class="form-control" id="inputSaldoConsiliado" disabled>
       </div>
     </div>
-    
+
     <hr>
 
     <!-- Sección Cuatro -->

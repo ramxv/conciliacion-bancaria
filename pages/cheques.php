@@ -29,7 +29,7 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 
             <select class="form-select" id="inputOrden">
               <option value=""></option>
-              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)) : ?>
+              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)):?>
                 <option value="<?= $row["codigo"] ?>"> <?= $row["nombre"] ?> </option>
               <?php endwhile ?>
             </select>

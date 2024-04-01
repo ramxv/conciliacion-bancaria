@@ -1,7 +1,8 @@
-<?php 
+<?php require "../includes/header.php" ?>
 
-require "../includes/header.php" 
+<?php require "../php/db_conciliacion.php";
 
+$consultaTransacciones = $conn->query("SELECT * FROM transacciones");
 ?>
 
 <div class="container w-50">
@@ -11,10 +12,10 @@ require "../includes/header.php"
       <div class="col-4">
         <label for="transacciones" class="form-label">Transacciones</label>
         <select class="form-select" aria-label="Transacciones">
-          <option> </option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+          <option value=""></option>
+          <?php while ($row = $consultaTransacciones->fetch(PDO::FETCH_ASSOC)) : ?>
+            <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+          <?php endwhile ?>
         </select>
       </div>
     </div>
