@@ -1,10 +1,8 @@
 <?php
-
 require "../php/db_conciliacion.php";
 
 $consultaProveedores = $conn->query("SELECT * FROM proveedores");
 $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
-
 ?>
 
 <?php require "../includes/header.php" ?>
@@ -73,10 +71,9 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
         </div>
       </div>
     </div>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-center pb-3">
-      <button type="button" class="btn" id="btn-custom">Grabar</button>
-      <button type="button" class="btn" id="btn-custom">Imprimir</button>
-      <button type="button" class="btn" id="btn-custom">Nuevo</button>
+    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3">
+      <button type="submit" class="btn" id="btn-custom">Grabar</button>
+      <button type="submit" class="btn" id="btn-custom">Nuevo</button>
     </div>
   </form>
 </div>

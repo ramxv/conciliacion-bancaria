@@ -21,15 +21,14 @@
           </a>
           <ul class="dropdown-menu pe-4" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="#" onclick="loadPage('anulacion.php')">Anulación</a></li>
-            <li><a class="dropdown-item" href="#">Sacar de circulación</a></li>
-            <li><a class="dropdown-item" href="#">Reintegro</a></li>
+            <li><a class="dropdown-item" href="#" onclick="loadPage('ck_circulacion.php')">Sacar de circulación</a></li>
           </ul>
         </li>
         <li class="nav-item pe-4">
-          <a class="nav-link text-white" href="#">Otras Transacciones</a>
+          <a class="nav-link text-white" href="#" onclick="loadPage('otras_transacciones.php')">Otras Transacciones</a>
         </li>
         <li class="nav-item pe-4" id="nav-item-custom">
-          <a class="nav-link text-white" href="#">Consolidación</a>
+          <a class="nav-link text-white" href="#" onclick="loadPage('conciliacion.php')">Conciliación</a>
         </li>
         <li class="nav-item pe-4" id="nav-item-custom">
           <a class="nav-link text-white" href="#">Reportes</a>
