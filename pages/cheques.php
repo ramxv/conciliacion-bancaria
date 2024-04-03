@@ -17,7 +17,7 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
           <div class="row justify-content-end">
             <div class="col-4">
               <label for="num-cheque-input" class="form-label">No.Cheque</label>
-              <input type="text" class="form-control" id="num-cheque-input" onkeypress="return soloNumeros(event)">
+              <input type="text" class="form-control" id="num-cheque-input" onkeypress="return soloNumeros(event)" autocomplete="off">
             </div>
             <div class="col-4">
               <label for="fecha-input" class="form-label">Fecha</label>
@@ -29,7 +29,7 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 
             <select class="form-select" id="inputOrden">
               <option value=""></option>
-              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)):?>
+              <?php while ($row = $consultaProveedores->fetch(PDO::FETCH_ASSOC)) : ?>
                 <option value="<?= $row["codigo"] ?>"> <?= $row["nombre"] ?> </option>
               <?php endwhile ?>
             </select>
@@ -57,11 +57,29 @@ $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 
               <select class="form-select" id="inputObjeto">
                 <option value=""></option>
-                <?php while ($row = $consultaObjetoGasto->fetch(PDO::FETCH_ASSOC)) : ?>
-                  <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
-                <?php endwhile ?>
-              </select>
+                <?php
+                $labels = array(
+                  "label1" => "SERVICIOS NO PERSONALES",
+                  "label2" => "MATERIALES DE SUMINISTRO",
+                  "label3" => "MAQUINARIA Y EQUIPOS"
+                );
 
+                foreach ($labels as $key => $label) :
+                ?>
+                  <optgroup label="<?= $label ?>">
+                    <?php
+                    $consultaObjetoGasto->execute();
+                    while ($row = $consultaObjetoGasto->fetch(PDO::FETCH_ASSOC)) :
+                      $codigo = $row["codigo"];
+                      $objetoGasto = substr($codigo, 0, 1);
+                      if ($objetoGasto == substr($key, -1)) :
+                    ?>
+                        <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+                      <?php endif ?>
+                    <?php endwhile ?>
+                  </optgroup>
+                <?php endforeach ?>
+              </select>
             </div>
             <div class="col-4">
               <label for="inputMonto" class="form-label">Monto</label>

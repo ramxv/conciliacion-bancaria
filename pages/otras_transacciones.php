@@ -2,7 +2,10 @@
 
 <?php require "../php/db_conciliacion.php";
 
-$consultaTransacciones = $conn->query("SELECT * FROM transacciones");
+$queryTransaccionesLibros = $conn->query("SELECT * FROM transacciones LIMIT 5");
+$queryTransaccionesBanco = $conn->query("SELECT * FROM transacciones LIMIT 2 OFFSET 5");
+$queryTransaccionesTransferencia = $conn->query("SELECT * FROM transacciones LIMIT 2 OFFSET 7");
+
 ?>
 
 <div class="container w-50">
@@ -13,9 +16,21 @@ $consultaTransacciones = $conn->query("SELECT * FROM transacciones");
         <label for="transacciones" class="form-label">Transacciones</label>
         <select class="form-select" aria-label="Transacciones">
           <option value=""></option>
-          <?php while ($row = $consultaTransacciones->fetch(PDO::FETCH_ASSOC)) : ?>
-            <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
-          <?php endwhile ?>
+          <optgroup label="LIBROS">
+            <?php while ($row = $queryTransaccionesLibros->fetch(PDO::FETCH_ASSOC)) :?>
+              <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+            <?php endwhile ?>
+          </optgroup>      
+          <optgroup label="BANCO">
+            <?php while ($row = $queryTransaccionesBanco->fetch(PDO::FETCH_ASSOC)) :?>
+              <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+            <?php endwhile ?>
+          </optgroup> 
+          <optgroup label="TRANSFERENCIA">
+            <?php while ($row = $queryTransaccionesTransferencia->fetch(PDO::FETCH_ASSOC)) :?>
+              <option value="<?= $row["codigo"] ?>"> <?= $row["detalle"] ?> </option>
+            <?php endwhile ?>
+          </optgroup>          
         </select>
       </div>
     </div>
