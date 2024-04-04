@@ -121,7 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php endforeach ?>
               </select>
             </div>
-<<<<<<< HEAD
             <div class="col-12 pt-2">
               <label for="inputMonto" class="form-label">La suma de</label>
               <div class="input-group">
@@ -182,11 +181,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="inputMonto4" class="form-label"></label>
                 <input type="text" class="form-control" id="inputMonto4" placeholder="">
               </div>
-=======
             <div class="col-4">
               <label for="inputMonto" class="form-label">Monto</label>
               <input type="text" class="form-control" id="inputMonto" placeholder="" name="montoObjeto" onkeypress="return soloNumeros(event)">
->>>>>>> 5a8c59ba86a7e571d035d790f983e1b66df288be
             </div>
           </div>
         </div>
