@@ -1,5 +1,3 @@
-<?php require "../includes/header.php" ?>
-
 <?php require "../php/db_conciliacion.php";
 
 $queryTransaccionesLibros = $conn->query("SELECT * FROM transacciones LIMIT 5");
@@ -7,6 +5,8 @@ $queryTransaccionesBanco = $conn->query("SELECT * FROM transacciones LIMIT 2 OFF
 $queryTransaccionesTransferencia = $conn->query("SELECT * FROM transacciones LIMIT 2 OFFSET 7");
 
 ?>
+
+<?php require "../includes/header.php" ?>
 
 <div class="container w-50">
   <form action="" class="border border-secondary-subtle rounded">
