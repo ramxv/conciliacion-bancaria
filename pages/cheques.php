@@ -40,8 +40,8 @@
             <div class="col-12 pt-2">
               <label for="inputMonto" class="form-label">La suma de</label>
               <div class="input-group">
-                <input type="text" aria-label="Monto" class="form-control" id="input-monto" placeholder="$" onkeypress="return soloDecimal(event)">
-                <input type="text" aria-label="Monto en Letras" class="form-control w-50" id="input-monto-letras" disabled>
+                <input type="text" aria-label="Monto" class="form-control" id="input-monto" placeholder="$" onkeypress="return soloDecimal(event)" onblur="mostrarMontoEnLetras()">
+                <input type="text" aria-label="Monto en Letras" class="form-control w-50" id="input-monto-letras" disabled >
               </div>
             </div>
             <div class="col-12 pt-2">
