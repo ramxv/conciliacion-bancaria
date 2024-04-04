@@ -2,7 +2,7 @@
 
 <div class="container">
   <form action="" class="border border-secondary-subtle rounded">
-    <h2 class="form-header p-3 border-bottom border-secondary-subtle">Anulación de Cheque</h2>
+    <h2 class="form-header p-3 border-bottom border-secondary-subtle">Sacar Cheque de Circulación</h2>
     <div class="row p-4">
       <div class="col p-3">
         <div class="anul-container">
@@ -43,14 +43,11 @@
       <div class="col p-3">
         <div class="col-4">
           <label for="fecha-input" class="form-label">Fecha de Anulación</label>
-          <input type="date" name="date" id="fecha-input" class="form-control">
+          <input type="date" name="date" id="fecha-input" class="form-control" disabled>
         </div>
-        <div class="col-12 pt-2">
-          <label for="floatingTextarea2" class="form-label">Detalle de la Anulación</label>
-          <textarea class="form-control" placeholder="" id="floatingTextarea2" style="height: 100px"></textarea>
-        </div>
+        
         <div class="d-grid gap-2 d-md-flex justify-content-md-center pt-5">
-          <button type="button" class="btn" id="btn-custom">Anular</button>
+          <button type="submit" class="btn" id="btn-custom">Sacar de Circulación</button>
         </div>
       </div>
     </div>

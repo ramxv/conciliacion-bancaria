@@ -1,11 +1,13 @@
 // FUNCIÓN PARA CARGAR PÁGINAS DESDE EL INICIO
 function loadPage(page) {
-    fetch(page)
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('contenido').innerHTML = html;
-        })
-        .catch(error => console.error('Error al cargar la página:', error));
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById('contenido').innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", page, true);
+    xhttp.send();
 }
 
 // * Función para restringir números en campos de nombre
@@ -30,6 +32,18 @@ function soloNumeros(evento) {
     } else {
         return false;
     }
+}
+
+// * Función para validar el campo de cedula
+function cedulaVal(evento) {
+  var code = (evento.which) ? evento.which : evento.keycode;
+  if (code == 8) {
+      return true;
+  } else if (code == 45 || code >= 48 && code <= 57) {
+      return true;
+  } else {
+      return false;
+  }
 }
 
 // * Función acepta punto decimal en los campos de decimales
