@@ -1,14 +1,14 @@
 // FUNCIÓN PARA CARGAR PÁGINAS DESDE EL INICIO
-function loadPage(page) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById('contenido').innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("GET", page, true);
-    xhttp.send();
-}
+// function loadPage(page) {
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function () {
+//         if (this.readyState == 4 && this.status == 200) {
+//             document.getElementById('contenido').innerHTML = this.responseText;
+//         }
+//     };
+//     xhttp.open("GET", page, true);
+//     xhttp.send();
+// }
 
 // * Función para restringir números en campos de nombre
 function soloLetras(evento) {
