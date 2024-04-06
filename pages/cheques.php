@@ -8,58 +8,63 @@ $error = null;
 $correcto = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if ($_POST["monto"] != $_POST["montoObjeto"]) {
-    $error = "Los montos ingresados no coinciden. Por favor, inténtalo de nuevo.";
-  } elseif (
-    empty($_POST["numCheque"]) || empty($_POST["fecha"]) || empty($_POST["beneficiario"]) ||
-    empty($_POST["monto"]) || empty($_POST["detalle"]) || empty($_POST["objetoGasto"]) || empty($_POST["montoObjeto"])
-  ) {
-    $error = "Por favor, completa todos los campos.";
-  } else {
+  if (isset($_POST["numCheque"])) {
     $numCheque = $_POST["numCheque"];
+
     $statement = $conn->prepare("SELECT * FROM cheques WHERE numero_cheque = :numCheque");
-    $statement->bindParam(":numCheque", $_POST["numCheque"]);
+    $statement->bindParam(":numCheque", $numCheque);
     $statement->execute();
+
     if ($statement->rowCount() > 0) {
-      $error = "El número de cheque ya está registrado.";
+      echo "registrada";
     } else {
-      $conn
-        ->prepare("INSERT INTO cheques (numero_cheque,fecha,beneficiario,monto,descripcion,codigo_objeto1,monto_objeto1) VALUES (:numCheque, :fecha, :beneficiario, :monto, :detalle, :objetoGasto, :montoObjeto)")
-        ->execute([
-          ":numCheque" => $_POST["numCheque"],
-          ":fecha" => $_POST["fecha"],
-          ":beneficiario" => $_POST["beneficiario"],
-          ":monto" => $_POST["monto"],
-          ":detalle" => $_POST["detalle"],
-          ":objetoGasto" => $_POST["objetoGasto"],
-          ":montoObjeto" => $_POST["montoObjeto"]
-        ]);
-        header("Location: inicio.php");
+      
+      if (
+        empty($_POST["numCheque"]) || empty($_POST["fecha"]) || empty($_POST["beneficiario"]) ||
+        empty($_POST["monto"]) || empty($_POST["detalle"]) || empty($_POST["objetoGasto"]) || empty($_POST["montoObjeto"])
+      ) {
+        echo "vacio";
+      } elseif ($_POST["monto"] != $_POST["montoObjeto"]) {
+        echo "diferente";
+      } else {
+        
+        $conn
+          ->prepare("INSERT INTO cheques (numero_cheque,fecha,beneficiario,monto,descripcion,codigo_objeto1,monto_objeto1) VALUES (:numCheque, :fecha, :beneficiario, :monto, :detalle, :objetoGasto, :montoObjeto)")
+          ->execute([
+            ":numCheque" => $_POST["numCheque"],
+            ":fecha" => $_POST["fecha"],
+            ":beneficiario" => $_POST["beneficiario"],
+            ":monto" => $_POST["monto"],
+            ":detalle" => $_POST["detalle"],
+            ":objetoGasto" => $_POST["objetoGasto"],
+            ":montoObjeto" => $_POST["montoObjeto"]
+          ]);
+      }
     }
+  } else {
+    echo "Error: número de cheque no recibido.";
   }
 }
-
 ?>
+
 
 <?php require "../includes/header.php" ?>
 
 <div class="container p-3">
-  <form action="inicio.php" method="POST" class="border border-secondary-subtle rounded">
+  <form method="POST" class="border border-secondary-subtle rounded">
     <h2 class="form-header p-3 border-bottom border-secondary-subtle">Creación</h2>
     <div class="row p-4">
-      <?php if ($error) : ?>
-        <p class="text-danger"> <strong> <?= $error ?> </strong> </p>
+      <?php if ($error): ?>
+        <div class="alert alert-danger" role="alert"><?= $error ?></div>
       <?php endif ?>
-      <?php if ($correcto) : ?>
-        <p class="text-success"> <strong> <?= $error ?> </strong> </p>
-      <?php endif ?>
+      <div class="error-container"></div>
       <div class="col p-3">
         <h3 class="form-header border border-secondary-subtle rounded p-3 cheque-title">Cheques</h3>
         <div class="ch-container">
           <div class="row justify-content-end">
             <div class="col-4">
-              <label for="num-cheque-input" class="form-label">No.Cheque</label>
-              <input type="text" class="form-control" id="num-cheque-input" name="numCheque" onkeypress="return soloNumeros(event)" autocomplete="off">
+              <label for="numCkInput" class="form-label">No.Cheque</label>
+              <input type="text" class="form-control" id="numCkInput" name="numCheque" onkeypress="return soloNumeros(event)" autocomplete="off">
             </div>
             <div class="col-4">
               <label for="fecha-input" class="form-label">Fecha</label>
@@ -136,5 +141,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </form>
 </div>
 
+<script src="../js/validations.js"></script>
 
 <?php require "../includes/footer.php" ?>
