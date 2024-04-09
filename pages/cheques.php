@@ -4,30 +4,27 @@ require "../php/db_conciliacion.php";
 $consultaProveedores = $conn->query("SELECT * FROM proveedores");
 $consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
 
-$error = null;
-$correcto = null;
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (isset($_POST["numCheque"])) {
     $numCheque = $_POST["numCheque"];
-
+    
     $statement = $conn->prepare("SELECT * FROM cheques WHERE numero_cheque = :numCheque");
     $statement->bindParam(":numCheque", $numCheque);
     $statement->execute();
-
+    
     if ($statement->rowCount() > 0) {
       echo "registrada";
     } else {
-      
+      // Verificar si algunos campos necesarios están vacíos
       if (
-        empty($_POST["numCheque"]) || empty($_POST["fecha"]) || empty($_POST["beneficiario"]) ||
+        empty($_POST["fecha"]) || empty($_POST["beneficiario"]) ||
         empty($_POST["monto"]) || empty($_POST["detalle"]) || empty($_POST["objetoGasto"]) || empty($_POST["montoObjeto"])
       ) {
         echo "vacio";
       } elseif ($_POST["monto"] != $_POST["montoObjeto"]) {
         echo "diferente";
       } else {
-        
+        // Realizar inserción en la base de datos
         $conn
           ->prepare("INSERT INTO cheques (numero_cheque,fecha,beneficiario,monto,descripcion,codigo_objeto1,monto_objeto1) VALUES (:numCheque, :fecha, :beneficiario, :monto, :detalle, :objetoGasto, :montoObjeto)")
           ->execute([
@@ -42,11 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
     }
   } else {
+    // Manejo de error si numCheque no está presente en $_POST
     echo "Error: número de cheque no recibido.";
   }
 }
-?>
 
+?>
 
 <?php require "../includes/header.php" ?>
 
@@ -54,12 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <form method="POST" class="border border-secondary-subtle rounded">
     <h2 class="form-header p-3 border-bottom border-secondary-subtle">Creación</h2>
     <div class="row p-4">
-      <?php if ($error): ?>
-        <div class="alert alert-danger" role="alert"><?= $error ?></div>
-      <?php endif ?>
+      <!-- Mensajes de aviso al cliente -->
       <div class="error-container"></div>
       <div class="col p-3">
         <h3 class="form-header border border-secondary-subtle rounded p-3 cheque-title">Cheques</h3>
+        <!-- Sección de Cheques -->
         <div class="ch-container">
           <div class="row justify-content-end">
             <div class="col-4">
@@ -95,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </div>
       </div>
+      <!-- Seccción de Objetos de Gastos -->
       <div class="col p-3">
         <h3 class="form-header border border-secondary-subtle rounded p-3 og-title">Objetos de Gastos</h3>
         <div class="og-container">
@@ -134,6 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
       </div>
     </div>
+    <!-- Botones -->
     <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3">
       <button type="submit" class="btn" id="btn-custom">Grabar</button>
       <button type="reset" class="btn" id="btn-custom">Nuevo</button>
