@@ -1,3 +1,4 @@
+// Validacion de número de cheque
 $(document).ready(function () {
     $("#numCkInput").on("blur", function (event) {
 
@@ -11,14 +12,10 @@ $(document).ready(function () {
                 type: 'POST',
                 data: { numCheque: numCheque },
                 success: function (response) {
-                    console.log(response);
                     if (response.includes('registrada')) {
-                        console.log("Hola 1");
                         $('.error-container').html('<div class="alert alert-danger" role="alert">Error: El número de cheque ya existe.</div>');
-
                         disableFields();
                     } else {
-                        console.log("Hola 3");
                         $('.error-container').html('<div class="alert alert-success" role="alert">El número de cheque es válido.</div>');
                         enableFields();
                     }
@@ -34,6 +31,7 @@ $(document).ready(function () {
     });
 });
 
+// Validación de montos
 
 $(document).ready(function () {
     $("form").submit(function (event) {

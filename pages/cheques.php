@@ -126,16 +126,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="col-4">
               <label for="inputMonto" class="form-label">Monto</label>
-              <input type="text" class="form-control" id="inputMonto" placeholder="" name="montoObjeto" onkeypress="return soloNumeros(event)">
+              <input type="text" class="form-control" id="inputMonto" placeholder="" name="montoObjeto" onkeypress="return soloDecimal(event)">
             </div>
           </div>
         </div>
       </div>
     </div>
     <!-- Botones -->
-    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3">
-      <button type="submit" class="btn" id="btn-custom">Grabar</button>
-      <button type="reset" class="btn" id="btn-custom">Nuevo</button>
+    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3" id="btn-custom-container">
+      <button type="submit" class="btn button-custom" id="">Grabar</button>
+      <button type="reset" class="btn button-custom" id="">Nuevo</button>
     </div>
   </form>
 </div>
