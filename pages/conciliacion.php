@@ -1,6 +1,8 @@
 <?php
 require "../php/db_conciliacion.php";
 $consultaMeses = $conn->query("SELECT mes, nombre_mes FROM meses");
+
+$anio_actual = date('Y');
 ?>
 <?php require "../includes/header.php" ?>
 
@@ -25,16 +27,21 @@ $consultaMeses = $conn->query("SELECT mes, nombre_mes FROM meses");
       <label for="inputMeses" class="form-label"><strong>Año</strong></label>
         <select class="form-select" name="meses" id="inputMeses">
           <option value="" selected></option>
-          <option value="01">2024</option>
-          <option value="02">2023</option>
-          <option value="03">2022</option>
-          <option value="04">2021</option>
-          <option value="05">2020</option>
+          <?php $control = 0; $value = 0;?>
+          <?php while ($control < 5):
+            $value++;
+            $temp = $anio_actual;
+            $anio_actual -= 1;
+            $anio_nuevo = $temp; 
+            ?>
+            <option value="<?= $value ?>"><?= $anio_nuevo ?></option>
+            <?php $control++; ?>
+          <?php endwhile?>
         </select>
       </div>
 
-      <div class="col-3">
-        <button type="submit" class="btn" id="btn-custom">Realizar Conciliación</button>
+      <div class="col-3" id="btn-custom-container">
+        <button type="submit" class="btn button-custom" id="btn-custom">Realizar Conciliación</button>
       </div>
     </div>
 
@@ -162,9 +169,9 @@ $consultaMeses = $conn->query("SELECT mes, nombre_mes FROM meses");
 
     <!-- Sección Botones -->
 
-    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3">
-      <button type="submit" class="btn" id="btn-custom">Grabar</button>
-      <button type="submit" class="btn" id="btn-custom">Nuevo</button>
+    <div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3" id="btn-custom-container">
+      <button type="submit" class="btn button-custom" id="btn-custom">Grabar</button>
+      <button type="submit" class="btn button-custom" id="btn-custom">Nuevo</button>
     </div>
 
   </form>
