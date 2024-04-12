@@ -29,12 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $stmt->bindParam(':numero_cheque', $numero_cheque);
 
       if ($stmt->execute()) {
-        $correcto = "El cheque salió de circulación correctamente.";
+        $correcto = "✅ El cheque salió de circulación correctamente.";
       } else {
-        $error = "Error al sacar el cheque de circulación.";
+        $error = "❌ Error al sacar el cheque de circulación.";
       }
     } catch (PDOException $e) {
-      $error = "Error al sacar el cheque de circulación. " . $e->getMessage();
+      $error = "❌ Error al sacar el cheque de circulación. " . $e->getMessage();
     }
   }
 }
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['sacarCirculacion'])) 
       if (is_null($row_circulacion) || $row_circulacion == $default_date) {
         $correcto = "✅ El cheque es válido.";
       } else {
-        $error = "❗El cheque está fuera de circulación";
+        $error = "❗El cheque se encuentra fuera de circulación";
       }
 
       // Obtener la fecha de anulación
@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['sacarCirculacion'])) 
           <div class="row justify-content-end align-items-end">
             <div class="col-4">
               <label for="num-cheque-input" class="form-label">No.Cheque</label>
-              <input type="text" class="form-control" id="num-cheque-input" autocomplete="off" name="numeroCheque" onkeypress="return soloNumeros(event)">
+              <input type="text" class="form-control" id="num-cheque-input" autocomplete="off" name="numeroCheque" value="<?= $numero_cheque?>" onkeypress="return soloNumeros(event)">
             </div>
             <div class="col-4" id="btn-custom-container">
               <button type="submit" class="btn button-custom" id="btn-custom">Buscar</button>
