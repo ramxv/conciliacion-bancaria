@@ -1,3 +1,0 @@
-
-
-<!-- onclick="loadPage('anulacion.php')" -->

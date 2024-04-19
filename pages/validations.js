@@ -121,3 +121,12 @@ function enableFields() {
 	$('#inputObjeto').removeAttr('disabled');
 	$('#inputMonto').removeAttr('disabled');
 }
+
+function readonlyFields() {
+	$('#fecha-input').attr('readonly', true);
+	$('#inputOrden').attr('readonly', true);
+	$('#input-monto').attr('readonly', true);
+	$('#inputDetalle').attr('readonly', true);
+	$('#inputObjeto').attr('readonly', true);
+	$('#inputMonto').attr('readonly', true);
+}

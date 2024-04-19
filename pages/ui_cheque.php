@@ -1,65 +1,12 @@
-<?php
-require "../php/db_conciliacion.php";
-
-$consultaProveedores = $conn->query("SELECT * FROM proveedores");
-$consultaObjetoGasto = $conn->query("SELECT * FROM objeto_gasto");
-
-$response = array();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	if (isset($_POST["numCheque"])) {
-		$numCheque = $_POST["numCheque"];
-
-		$statement = $conn->prepare("SELECT * FROM cheques WHERE numero_cheque = :numCheque");
-		$statement->bindParam(":numCheque", $numCheque);
-		$statement->execute();
-
-		if ($statement->rowCount() > 0) {
-			$response["success"] = false;
-			$response["error"] = "El numero de cheque ya esta registrado";
-		} else {
-			if (
-				empty($_POST["fecha"]) || empty($_POST["beneficiario"]) ||
-				empty($_POST["monto"]) || empty($_POST["detalle"]) || empty($_POST["objetoGasto"]) || empty($_POST["montoObjeto"])
-			) {
-				$response["success"] = false;
-				$response["error"] = "Llene todos los campos";
-			} else {
-				$statement = $conn->prepare("INSERT INTO cheques (numero_cheque,fecha,beneficiario,monto,descripcion,codigo_objeto1,monto_objeto1) VALUES (:numCheque, :fecha, :beneficiario, :monto, :detalle, :objetoGasto, :montoObjeto)");
-				$result = $statement->execute([
-					":numCheque" => $_POST["numCheque"],
-					":fecha" => $_POST["fecha"],
-					":beneficiario" => $_POST["beneficiario"],
-					":monto" => $_POST["monto"],
-					":detalle" => $_POST["detalle"],
-					":objetoGasto" => $_POST["objetoGasto"],
-					":montoObjeto" => $_POST["montoObjeto"]
-				]);
-
-				if ($result) {
-					$response["success"] = true;
-					$response["mensaje"] = "Se ha registrado correctamente el cheque";
-				} else {
-					$response["success"] = false;
-					$response["error"] = "Error al registrar el cheque en la base de datos";
-				}
-			}
-		}
-	} else {
-		$response["success"] = false;
-		$response["error"] = "Numero de cheque no recibido";
-	}
-}
-
-echo json_encode($response);
-?>
+<?php require "../php/db_conciliacion.php"; ?>
+<?php require "logica_cheque.php"; ?>
 
 <div class="container p-3">
 	<form method="POST" class="border border-secondary-subtle rounded" onsubmit="grabarCheques(event)" id="cheques-form">
 		<h2 class="form-header p-3 border-bottom border-secondary-subtle">Creación</h2>
 		<div class="row p-4">
 			<!-- Mensajes de aviso al cliente -->
-			<div class="error-container"></div>
+			<div class="error-container" id="mensaje-cliente"></div>
 			<div class="col p-3">
 				<h3 class="form-header border border-secondary-subtle rounded p-3 cheque-title">Cheques</h3>
 				<!-- Sección de Cheques -->
@@ -67,7 +14,7 @@ echo json_encode($response);
 					<div class="row justify-content-end">
 						<div class="col-4">
 							<label for="numCkInput" class="form-label">No.Cheque</label>
-							<input type="text" class="form-control" id="numCkInput" name="numCheque" onkeypress="return soloNumeros(event)" autocomplete="off">
+							<input type="text" class="form-control" id="numCkInput" name="numCheque" onkeypress="return soloNumeros(event)" onblur="validarNumCheque()" autocomplete="off" maxlength="3">
 						</div>
 						<div class="col-4">
 							<label for="fecha-input" class="form-label">Fecha</label>
@@ -94,7 +41,7 @@ echo json_encode($response);
 					</div>
 					<div class="col-12 pt-2">
 						<label for="inputDetalle" class="form-label">Detalle</label>
-						<input type="text" class="form-control" id="inputDetalle" name="detalle" placeholder="">
+						<input type="text" class="form-control" id="inputDetalle" name="detalle" placeholder="" autocomplete="off">
 					</div>
 				</div>
 			</div>
@@ -141,7 +88,7 @@ echo json_encode($response);
 		<!-- Botones -->
 		<div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3" id="btn-custom-container">
 			<button type="submit" class="btn button-custom" id="">Grabar</button>
-			<button type="reset" class="btn button-custom" id="">Nuevo</button>
+			<button type="reset" class="btn button-custom"  onclick="resetMensaje()">Nuevo</button>
 		</div>
 	</form>
 </div>

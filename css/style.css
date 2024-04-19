@@ -47,18 +47,6 @@ form {
   padding: 5px;
 }
 
-/* #btn-custom {
-  background-color: #00008b;
-  color: white;
-}
-
-#btn-custom:hover {
-  background-color: transparent;
-  border: 1px solid #00008b;
-  color: #00008b;
-} */
-
-
 #btn-custom-container > .button-custom {
   background-color: #00008b;
   color: white;
