@@ -168,7 +168,87 @@ function validarCkAnulacion() {
 
 
 // ! ======================================== 			Sección Sacar de Circulación 				==============================================
+function validarCkCirculacion() {
+	let numeroCheque = document.getElementById("num-cheque-input").value.trim();
+	if (numeroCheque !== "") {
+		$.ajax({
+			type: 'POST',
+			url: 'logica_validarCirculacion.php',
+			dataType: 'json',
+			data: { numeroCheque: numeroCheque },
+			success: function (response) {
+				try {
+					if (response.successCirculacion && response.successAnulado) {
+						// El número de cheque es válido
+						$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensajeNumCk + '</div>');
+						llenarCampos(response);
+						disableFields();
+					} else {
+						$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">' + response.mensajeNumCk + '</div>');
+						$('#fecha-circulacion').attr('disabled', 'disabled');
+					}
+				} catch (error) {
+					console.error('Error al analizar la respuesta JSON:', error);
+					$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error al analizar la respuesta del servidor</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Error al conectar con el servidor:', error);
+				$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error al conectar con el servidor</div>');
+			}
+		});
+	} else {
+		// Error: número de cheque no recibido
+		$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error: número de cheque no recibido.</div>');
+	}
+}
 
+function grabarCirculacion(event) {
+	event.preventDefault();
+	let fecha_circulacion = document.getElementById("fecha-circulacion").value;
+	
+	// Crear un objeto FormData con los campos necesarios para la actualización
+	let formData = new FormData(document.getElementById("circulacion-form"));
+
+	if (fecha_circulacion === '') {
+		$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert"> ⚠️ Llene todos los campos.</div>');
+	}
+
+	// Realizar la solicitud AJAX
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4 && xhr.status === 200) {
+			try {
+				// Registrar la respuesta completa del servidor
+				console.log('Respuesta completa del servidor:', xhr.responseText);
+
+				// Analizar la respuesta JSON del servidor
+				var response = JSON.parse(xhr.responseText);
+
+				if (response.success) {
+					// Mostrar mensaje de éxito si se completó la actualización
+					console.log('Cheque anulado correctamente:', response.mensaje);
+					$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
+				} else {
+					// Mostrar mensaje de error si hubo problemas en la actualización
+					console.error('Error en el servidor:', response.mensaje || 'Error desconocido');
+					$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">' + (response.mensaje || 'Error desconocido') + '</div>');
+				}
+			} catch (e) {
+				console.error('Error al analizar la respuesta del servidor:', e);
+				$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error al analizar la respuesta del servidor</div>');
+			}
+		} else {
+			// Manejo de errores HTTP
+			console.error('Error HTTP:', xhr.status, xhr.statusText);
+			$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error en la solicitud HTTP</div>');
+		}
+	};
+	// Configurar la solicitud AJAX como POST
+	xhr.open('POST', 'logica_grabarCirculacion.php', true);
+	// Enviar los datos de los campos para la actualización
+	xhr.send(formData);
+}
 
 
 // ! ======================================== 			Sección Otras Transacciones 				==============================================
