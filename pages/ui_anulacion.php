@@ -1,7 +1,6 @@
 <?php require "../php/db_conciliacion.php"; ?>
 <?php require "logica_validarAnulacion.php"; ?>
 <?php require "logica_grabarAnulacion.php"; ?>
-<?php require "logica_cheque.php"; ?>
 
 <div class="container">
 	<form id="anulacion-form" class="border border-secondary-subtle rounded" method="POST" onsubmit="grabarAnulacion(event)">
