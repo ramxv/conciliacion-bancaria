@@ -252,8 +252,34 @@ function grabarCirculacion(event) {
 
 
 // ! ======================================== 			Sección Otras Transacciones 				==============================================
+function grabarOtrasTransacciones(event) {
 
+	event.preventDefault();
 
+	let form_data = new FormData(document.getElementById("otras-transacciones-form"));
+
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4 && xhr.status === 200) {
+			try {
+				console.log(xhr.responseText);
+				var response = JSON.parse(xhr.responseText);
+				console.log(response);
+				if (response.success) {
+					console.log('Respuesta del servidor:', response.mensaje);
+					$('.error-container').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
+				} else {
+					console.error('Error en el servidor:', response.error);
+					$('.error-container').html('<div class="alert alert-danger" role="alert">' + response.error + '</div>');
+				}
+			} catch (e) {
+				console.error('Error al analizar la respuesta del servidor:', e);
+			}
+		}
+	};
+	xhr.open('POST', 'logica_otrasTransacciones.php', true);
+	xhr.send(form_data);
+}
 
 // ! ======================================== 			Sección Conciliación 								==============================================
 
