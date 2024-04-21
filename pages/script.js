@@ -179,7 +179,7 @@ function validarCkAnulacion() {
 
 
 
-// ! ======================================== 			Sección Funciones		==============================================
+// ! ======================================== 			Sección Funciones	Complementarias		==============================================
 
 function resetMensaje() {
 	const mensajeCliente = document.getElementById('mensaje-cliente');
@@ -193,13 +193,4 @@ function llenarCampos(response) {
 	$('#inputMonto').val(response.monto);
 	$('#inputDetalle').val(response.descripcion);
 	$('#fecha-anulada').val(response.fecha_anulado);
-}
-
-function vaciarCampos() {
-	// Vacía los campos del formulario
-	$('#fecha-input').val('');
-	$('#inputOrden').val('');
-	$('#inputMonto').val('');
-	$('#inputDetalle').val('');
-	$('#fecha-anulada').val('');
 }
