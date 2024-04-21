@@ -20,6 +20,26 @@
   width: 2.2rem;
 }
 
+#carousel-custom {
+	font-size: 1.5rem; /* Ajusta el tamaño de fuente */
+	background-color: rgba(1, 32, 127, 0.9); /* Fondo semitransparente */
+	padding: 1rem; /* Espaciado interno */
+	border-radius: 0.5rem; /* Borde redondeado */
+	bottom: 20%; /* Posiciona los captions más arriba */
+	color: #fff;
+}
+
+/* Estilos para los títulos de los captions */
+#carousel-custom h5 {
+	font-size: 2.5rem; /* Ajusta el tamaño de fuente */
+	font-weight: bold; /* Hace el título más llamativo */
+}
+
+/* Estilos para los párrafos de los captions */
+#carousel-custom p {
+	font-size: 1.5rem; /* Ajusta el tamaño de fuente */
+	font-weight: bold;
+}
 
 form {
   max-width: 100vw;
