@@ -282,7 +282,42 @@ function grabarOtrasTransacciones(event) {
 }
 
 // ! ======================================== 			Sección Conciliación 								==============================================
-
+function realizarConciliacion() {
+	let mes = document.getElementById("inputMeses").value;
+	let anio = document.getElementById("inputAnio").value;
+	if (mes !== "" || anio !== "") {
+		$.ajax({
+			type: 'POST',
+			url: 'logica_conciliacion.php',
+			dataType: 'json',
+			data: { meses: mes, anio: anio },
+			success: function (response) {
+				console.log(response);
+				try {
+					if (response.success) {
+						// El número de cheque es válido
+						$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
+						llenarLabels(response);
+						llenarCamposConciliacion(response);
+					} else {
+						$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert">' + response.mensaje + '</div>');
+					}
+				} catch (error) {
+					console.error('Error al analizar la respuesta JSON:', error);
+					$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">❗Error al analizar la respuesta del servidor</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Error al conectar con el servidor:', error);
+				$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">❌ Error al conectar con el servidor</div>');
+			}
+		});
+	} else {
+		// Error: hay campos sin llenar
+		$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert">' + response.mensaje + '</div>');
+		$('#inputSaldoBanco').attr('disabled', 'disabled');
+	}
+}
 
 
 // ! ======================================== 			Sección Funciones	Complementarias		==============================================
@@ -292,11 +327,49 @@ function resetMensaje() {
 	mensajeCliente.innerHTML = '';
 }
 
-// * Esta funcón llena los campos del formulario con los datos recibidos
+// * Esta funcón llena los campos del formulario (Anulación y Circulación) con los datos recibidos.
 function llenarCampos(response) {
 	$('#fecha-input').val(response.fecha);
 	$('#inputOrden').val(response.beneficiario);
 	$('#inputMonto').val(response.monto);
 	$('#inputDetalle').val(response.descripcion);
 	$('#fecha-anulada').val(response.fecha_anulado);
+}
+// * Esta función llena los inputs con los valores del objeto response.
+function llenarCamposConciliacion(response) {
+	$('#inputSaldoLibro').val(response.saldo_anterior);
+	$('#inputDeposito').val(response.mas_depositos);
+	$('#inputChequesAnulados').val(response.mas_cheques_anulados);
+	$('#inputNotasCredito').val(response.mas_notas_credito);
+	$('#inputAjustesLibro').val(response.mas_ajustes_libro);
+	$('#inputSubtotal').val(response.sub_primera);
+	$('#inputSubtotalFinal').val(response.subtotal_primera);
+	$('#inputCkGirados').val(response.menos_cheques_girados);
+	$('#inputNotasDebito').val(response.menos_notas_debito);
+	$('#inputAjusteCkGirados').val(response.menos_ajustes_libro);
+	$('#inputSubtotalMenosLibros').val(response.sub_segunda);
+	$('#inputSaldoConsiliadoLibros').val(response.saldo_libros);
+	$('#inputSaldoBanco').val(response.saldo_banco);
+	$('#inputDepositoTransito').val(response.mas_depositos_transito);
+	$('#inputChequesCirculacion').val(response.menos_cheques_circulacion);
+	$('#inputAjusteBanco').val(response.mas_ajustes_banco);
+	$('#inputSubtotalMenosBanco').val(response.sub_tercero);
+	$('#inputSaldoConsiliadoBanco').val(response.saldo_conciliado);
+}
+
+function llenarLabels(response) {
+	// Obtener fechas de las variables de respuesta
+	var dia = response.dia;
+	var mes_libro = response.mes_libro;
+	var dia_actual = response.dia_actual;
+	var mes_actual = response.mes_actual;
+	var anio_anterior = response.anio_anterior;
+	var anio = response.anio;
+
+	// Desplegar las fechas en los labels correspondientes
+	$('#labelSaldoLibro').html(`<strong>SALDO SEGÚN LIBRO AL ${dia} de ${mes_libro} de ${anio_anterior}</strong>`);
+	$('#labelSaldoConsiliadoLibros').html(`<strong>SALDO CONCILIADO SEGÚN LIBROS AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
+	$('#labelSaldoBanco').html(`<strong>SALDO EN BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
+	$('#labelSaldoConsiliadoBanco').html(`<strong>SALDO CONCILIADO IGUAL A BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
+
 }

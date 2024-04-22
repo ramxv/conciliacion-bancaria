@@ -1,157 +1,14 @@
 <?php require "../php/db_conciliacion.php"; ?>
-
-<?php
-
-$consultaMeses = $conn->query("SELECT * FROM meses");
-
-// Variables de mensajes
-$error = null;
-$warning = null;
-$correcto = null;
-
-// Variables de fechas para mostrar en SALDO
-$anio = "";
-$mes_anterior = "";
-$mes_libro = "";
-$dia = "";
-$dia_actual = "";
-$mes_actual = "";
-$anio_anterior="";
-// Variables de los inputs de la Primera Sección
-$saldo_anterior = "";
-$mas_depositos = "";
-$mas_cheques_anulados = "";
-$mas_notas_credito = "";
-$mas_ajustes_libro = "";
-$sub_primera = "";
-$subtotal_primera = "";
-// Variables de los inputs de la Segunda Sección
-$menos_cheques_girados="";
-$menos_notas_debito="";
-$menos_ajustes_libro="";
-$sub_segunda="";
-$saldo_libros="";
-// Variables de los inputs de la Tercera Sección
-$saldo_blanco = "";
-$mas_depositos_transito = "";
-$menos_cheques_circulacion = "";
-$mas_ajustes_banco = "";
-$sub_tercero = "";
-$saldo_conciliado = "";
-
-function obtenerMesAnterior($conn, $mes_seleccionado, $anio_anterior)
-{
-	if ($mes_seleccionado == 1) {
-		$mes_anterior = 12;
-		$anio_anterior--;
-	} else {
-		$mes_anterior = $mes_seleccionado - 1;
-	}
-
-	// Formateamos el mes como "03" si es necesario
-	$mes_anterior = sprintf("%02d", $mes_anterior);
-	$statement_mes = $conn->prepare("SELECT * FROM meses WHERE mes = :mes");
-	$statement_mes->bindParam(":mes", $mes_anterior);
-	$statement_mes->execute();
-
-	if ($statement_mes->rowCount() > 0) {
-		$row_mes = $statement_mes->fetch(PDO::FETCH_ASSOC);
-		$mes_libro = $row_mes["nombre_mes"];
-		$dia = $row_mes["dia"];
-
-		// Retornamos el día y el nombre del mes en un array asociativo
-		return array("dia" => $dia, "mes_libro" => $mes_libro, "anio_anterior" => $anio_anterior);
-	} else {
-		return null;
-	}
-}
-
-function obtenerFechaActual($conn, $mes_seleccionado, $anio)
-{
-	$mes_seleccionado = sprintf("%02d", $mes_seleccionado);
-	$statement_mes = $conn->prepare("SELECT * FROM meses WHERE mes = :mes");
-	$statement_mes->bindParam(":mes", $mes_seleccionado);
-	$statement_mes->execute();
-
-	if ($statement_mes->rowCount() > 0) {
-		$row_mes = $statement_mes->fetch(PDO::FETCH_ASSOC);
-		$mes_actual = $row_mes["nombre_mes"];
-		$dia_actual = $row_mes["dia"];
-
-		// Retornamos el día y el nombre del mes en un array asociativo
-		return array("dia_actual" => $dia_actual, "mes_actual" => $mes_actual, "anio" => $anio);
-	} else {
-		return null;
-	}
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_POST["anio"])) {
-
-	if (empty($_POST["meses"]) || empty($_POST["anio"])) {
-		$warning = "⚠️ Completa todos los campos antes de continuar";
-	} else {
-		$correcto = "✅ Los campos han sido completados correctamente";
-		$anio = $_POST["anio"];
-		$mes_seleccionado = (int)$_POST["meses"];
-		$mesAnteriorInfo = obtenerMesAnterior($conn, $mes_seleccionado, $anio);
-		$mesActualInfo = obtenerFechaActual($conn, $mes_seleccionado, $anio);
-
-		// Verificamos si se obtuvo la información de ambas funciones
-		if ($mesAnteriorInfo !== null && $mesActualInfo !== null) {
-			// Extraemos los valores de la función del mes anterior
-			$dia = $mesAnteriorInfo["dia"];
-			$mes_libro = $mesAnteriorInfo["mes_libro"];
-			$anio_anterior = $mesAnteriorInfo["anio_anterior"];
-			//Extraemos los valores de la función para la fecha actual
-			$dia_actual = $mesActualInfo["dia_actual"];
-			$mes_actual = $mesActualInfo["mes_actual"];
-			$anio = $mesActualInfo["anio"];
-		}
-			
-		$statement = $conn->prepare("SELECT * FROM conciliacion WHERE mes = :mes AND agno = :agno");
-		$statement->bindParam(':mes', $_POST["meses"]);
-		$statement->bindParam(':agno',$_POST["anio"]);
-		$statement->execute();
-		if ($statement->rowCount() > 0) {
-			$row_conciliacion = $statement->fetch(PDO::FETCH_ASSOC);
-			$saldo_anterior = $row_conciliacion["saldo_anterior"];
-			$mas_depositos = $row_conciliacion["masdepositos"];
-			$mas_cheques_anulados = $row_conciliacion["maschequesanulados"];
-			$mas_notas_credito = $row_conciliacion["masnotascredito"];
-			$mas_ajustes_libro = $row_conciliacion["masajusteslibro"];
-			$sub_primera = $row_conciliacion["sub1"];
-			$subtotal_primera = $row_conciliacion["subtotal1"];
-			$menos_cheques_girados = $row_conciliacion["menoschequesgirados"];
-			$menos_notas_debito = $row_conciliacion["menosnotasdebito"];
-			$menos_ajustes_libro = $row_conciliacion["menosajusteslibro"];
-			$sub_segunda = $row_conciliacion["sub2"];
-			$saldo_libros = $row_conciliacion["saldolibros"];
-			$saldo_banco = $row_conciliacion["saldobanco"];
-			$mas_depositos_transito = $row_conciliacion["masdepositostransito"];
-			$menos_cheques_circulacion = $row_conciliacion["menoschequescirculacion"];
-			$mas_ajustes_banco = $row_conciliacion["masajustesbanco"];
-			$sub_tercero = $row_conciliacion["sub3"];
-			$saldo_conciliado = $row_conciliacion["saldo_conciliado"];
-		}
-	}
-}
-?>
-
-<?php require "../includes/header.php" ?>
+<?php require "logica_conciliacion.php"; ?>
 
 <div class="container-fluid w-75 mt-5 p-5">
 
 	<form action="" class="border border-secondary-subtle rounded" method="post">
 		<h3 class="form-header p-3 border-bottom border-secondary-subtle ">Conciliación Bancaria</h3>
-		<?php if ($warning): ?>
-				<div class="p-3">
-					<div class="warning-container alert alert-warning" role="alert"><?= $warning ?></div>
-				</div>
-      <?php elseif ($correcto): ?>
-				<div class="p-3">
-					<div class="correcto-container alert alert-success" role="alert"><?= $correcto ?></div>
-				</div>
-    <?php endif ?>
+		<!-- Mensaje de error al usuario -->
+		<div class="p-3">
+			<div class="error-container" id="mensaje-cliente"></div>
+		</div>
 
 		<!-- ----------------------------------------------------------- CABECERA ----------------------------------------------------------- -->
 		<div class="row p-3 justify-content-end align-items-end d-flex">
@@ -183,13 +40,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_PO
 			</div>
 
 			<div class="col-3" id="btn-custom-container">
-				<button type="submit" class="btn button-custom" id="btn-custom">Realizar Conciliación</button>
+				<button type="button" class="btn button-custom" id="btn-custom" onclick="realizarConciliacion()">Realizar Conciliación</button>
 			</div>
 		</div>
-	<!-- ----------------------------------------------------------- PRIMERA SECCIÓN (MÁS) ----------------------------------------------------------- -->
+		<!-- ----------------------------------------------------------- PRIMERA SECCIÓN (MÁS) ----------------------------------------------------------- -->
 		<!-- Mostrar el nombre del mes anterior seleccionado -->
 		<div class="row justify-content-between pe-5 ps-2">
-			<label for="inputSaldoLibro" class="col-sm-2 col-form-label w-auto text-uppercase"><strong>SALDO SEGÚN LIBRO AL <?= $dia ?> de <?= $mes_libro ?> de <?= $anio_anterior ?></strong></label>
+			<label for="inputSaldoLibro" class="col-sm-2 col-form-label w-auto text-uppercase" id="labelSaldoLibro"><strong>SALDO SEGÚN LIBRO AL</strong></label>
 			<div class="col-3">
 				<input type="saldoLibro" class="form-control" name="saldo_anterior" id="inputSaldoLibro" value="<?= $saldo_anterior ?>" disabled>
 			</div>
@@ -263,17 +120,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_PO
 
 		<!-- SUB2 -->
 		<div class="row mb-2 justify-content-end pe-5 ps-2">
-			<label for="inputSubtotalMenos" class="col-sm-2 col-form-label"><strong>Subtotal</strong></label>
+			<label for="inputSubtotalMenosLibros" class="col-sm-2 col-form-label"><strong>Subtotal</strong></label>
 			<div class="col-3">
-				<input type="subtotalMenos" class="form-control" name="sub_segunda" id="inputSubtotalMenos" value="<?= $sub_segunda ?>" disabled>
+				<input type="subtotalMenos" class="form-control" name="sub_segunda" id="inputSubtotalMenosLibros" value="<?= $sub_segunda ?>" disabled>
 			</div>
 		</div>
 
 		<!-- SALDOLIBROS -->
 		<div class="row justify-content-between pe-5 ps-2">
-			<label for="inputSaldoConsiliado" class="col col-form-label text-uppercase"><strong>SALDO CONCILIADO SEGÚN LIBROS AL <?= $dia_actual ?> de <?= $mes_actual ?> de <?= $anio ?></strong></label>
+			<label for="inputSaldoConsiliadoLibros" class="col col-form-label text-uppercase" id="labelSaldoConsiliadoLibros"><strong>SALDO CONCILIADO SEGÚN LIBROS AL</strong></label>
 			<div class="col-3">
-				<input type="saldoConsiliado" class="form-control" name="saldo_libros" id="inputSaldoConsiliado" value="<?= $saldo_libros ?>" disabled>
+				<input type="saldoConsiliado" class="form-control" name="saldo_libros" id="inputSaldoConsiliadoLibros" value="<?= $saldo_libros ?>" disabled>
 			</div>
 		</div>
 
@@ -281,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_PO
 
 		<!-- ----------------------------------------------------------- TERCERA SECCIÓN (BANCO) ----------------------------------------------------------- -->
 		<div class="row justify-content-between pe-5 ps-2">
-			<label for="inputSaldoBanco" class="col-sm-2 col-form-label w-auto text-uppercase"><strong>SALDO EN BANCO AL <?= $dia_actual ?> de <?= $mes_actual ?> de <?= $anio ?></strong></label>
+			<label for="inputSaldoBanco" class="col-sm-2 col-form-label w-auto text-uppercase" id="labelSaldoBanco"><strong>SALDO EN BANCO AL</strong></label>
 			<div class="col-3">
 				<input type="saldoBanco" class="form-control" name="saldo_blanco" id="inputSaldoBanco">
 			</div>
@@ -310,17 +167,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_PO
 
 		<!-- SUB3 -->
 		<div class="row mb-2 justify-content-end pe-5 ps-2">
-			<label for="inputSubtotalMenos" class="col-sm-2 col-form-label"><strong>Subtotal</strong></label>
+			<label for="inputSubtotalMenosBanco" class="col-sm-2 col-form-label"><strong>Subtotal</strong></label>
 			<div class="col-3">
-				<input type="subtotalMenos" class="form-control" name="sub_tercero" id="inputSubtotalMenos" value="<?= $sub_tercero ?>" disabled>
+				<input type="subtotalMenos" class="form-control" name="sub_tercero" id="inputSubtotalMenosBanco" value="<?= $sub_tercero ?>" disabled>
 			</div>
 		</div>
 
 		<!-- SALDO_CONCILIADO -->
 		<div class="row justify-content-between pe-5 ps-2">
-			<label for="inputSaldoConsiliado" class="col col-form-label text-uppercase"><strong>SALDO CONCILIADO IGUAL A BANCO AL <?= $dia_actual ?> de <?= $mes_actual ?> de <?= $anio ?></strong></label>
+			<label for="inputSaldoConsiliadoBanco" class="col col-form-label text-uppercase" id="labelSaldoConsiliadoBanco"><strong>SALDO CONCILIADO IGUAL A BANCO AL</strong></label>
 			<div class="col-3">
-				<input type="saldoConsiliado" class="form-control" name="saldo_conciliado" id="inputSaldoConsiliado" value="<?= $saldo_conciliado ?>" disabled>
+				<input type="saldoConsiliado" class="form-control" name="saldo_conciliado" id="inputSaldoConsiliadoBanco" value="<?= $saldo_conciliado ?>" disabled>
 			</div>
 		</div>
 
@@ -334,4 +191,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["meses"]) && isset($_PO
 
 	</form>
 </div>
-<?php require "../includes/footer.php" ?>
