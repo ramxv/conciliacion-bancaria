@@ -186,7 +186,7 @@
 		<!-- ----------------------------------------------------------- BOTONES ----------------------------------------------------------- -->
 		<div class="d-grid gap-5 d-md-flex justify-content-md-center pb-3" id="btn-custom-container">
 			<button type="submit" class="btn button-custom" id="btn-custom">Grabar</button>
-			<button type="submit" class="btn button-custom" id="btn-custom">Nuevo</button>
+			<button type="reset" class="btn button-custom"  onclick="resetMensaje()">Nuevo</button>
 		</div>
 
 	</form>
