@@ -262,7 +262,6 @@ function grabarOtrasTransacciones(event) {
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			try {
-				console.log(xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				console.log(response);
 				if (response.success) {
@@ -281,7 +280,7 @@ function grabarOtrasTransacciones(event) {
 	xhr.send(form_data);
 }
 
-// ! ======================================== 			Sección Conciliación 								==============================================
+// ! ======================================== 			Sección Conciliación 			==============================================
 function realizarConciliacion() {
 	let mes = document.getElementById("inputMeses").value;
 	let anio = document.getElementById("inputAnio").value;
@@ -296,12 +295,21 @@ function realizarConciliacion() {
 				try {
 					if (response.success) {
 						// El número de cheque es válido
-						$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
-						llenarLabels(response);
-						llenarCamposConciliacion(response);
-					} else {
 						$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert">' + response.mensaje + '</div>');
+						llenarLabels(response);
+						llenarConciliacionRegistrada(response);
+						$("#inputSaldoBanco").attr('disabled', 'disabled');
+					} else {
+						if (response.successConciliacion) {
+							$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensajeConciliacion + '</div>');
+							llenarLabels(response);
+							vaciarCamposConciliacion();
+							llenarConciliacion(response);
+						} else {
+							$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">❌ Error desconocido</div>');
+						}
 					}
+
 				} catch (error) {
 					console.error('Error al analizar la respuesta JSON:', error);
 					$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">❗Error al analizar la respuesta del servidor</div>');
@@ -320,7 +328,7 @@ function realizarConciliacion() {
 }
 
 
-// ! ======================================== 			Sección Funciones	Complementarias		==============================================
+// ! ========================================		Sección Funciones	Complementarias		==============================================
 
 function resetMensaje() {
 	const mensajeCliente = document.getElementById('mensaje-cliente');
@@ -335,8 +343,9 @@ function llenarCampos(response) {
 	$('#inputDetalle').val(response.descripcion);
 	$('#fecha-anulada').val(response.fecha_anulado);
 }
+
 // * Esta función llena los inputs con los valores del objeto response.
-function llenarCamposConciliacion(response) {
+function llenarConciliacionRegistrada(response) {
 	$('#inputSaldoLibro').val(response.saldo_anterior);
 	$('#inputDeposito').val(response.mas_depositos);
 	$('#inputChequesAnulados').val(response.mas_cheques_anulados);
@@ -372,4 +381,48 @@ function llenarLabels(response) {
 	$('#labelSaldoBanco').html(`<strong>SALDO EN BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
 	$('#labelSaldoConsiliadoBanco').html(`<strong>SALDO CONCILIADO IGUAL A BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
 
+}
+
+function vaciarCamposConciliacion() {
+	// Vaciar los campos de entrada seleccionando cada uno por su ID y estableciendo su valor en una cadena vacía ('')
+	$('#inputSaldoLibro').val('');
+	$('#inputDeposito').val('');
+	$('#inputChequesAnulados').val('');
+	$('#inputNotasCredito').val('');
+	$('#inputAjustesLibro').val('');
+	$('#inputSubtotal').val('');
+	$('#inputSubtotalFinal').val('');
+	$('#inputCkGirados').val('');
+	$('#inputNotasDebito').val('');
+	$('#inputAjusteCkGirados').val('');
+	$('#inputSubtotalMenosLibros').val('');
+	$('#inputSaldoConsiliadoLibros').val('');
+	$('#inputSaldoBanco').val('');
+	$('#inputDepositoTransito').val('');
+	$('#inputChequesCirculacion').val('');
+	$('#inputAjusteBanco').val('');
+	$('#inputSubtotalMenosBanco').val('');
+	$('#inputSaldoConsiliadoBanco').val('');
+}
+
+function llenarConciliacion(response) {
+	// $('#inputSaldoLibro').val(response.saldo_anterior);
+	$('#inputDeposito').val(response.mas_depositos);
+	$('#inputChequesAnulados').val(response.mas_cheques_anulados);
+	$('#inputNotasCredito').val(response.mas_notas_credito);
+	$('#inputAjustesLibro').val(response.mas_ajustes_libro);
+	console.log(response.mas_notas_credito);
+	// $('#inputSubtotal').val(response.sub_primera);
+	// $('#inputSubtotalFinal').val(response.subtotal_primera);
+	$('#inputCkGirados').val(response.menos_cheques_girados);
+	$('#inputNotasDebito').val(response.menos_notas_debito);
+	$('#inputAjusteCkGirados').val(response.menos_ajustes_libro);
+	// $('#inputSubtotalMenosLibros').val(response.sub_segunda);
+	// $('#inputSaldoConsiliadoLibros').val(response.saldo_libros);
+	// $('#inputSaldoBanco').val(response.saldo_banco);
+	$('#inputDepositoTransito').val(response.mas_depositos_transito);
+	$('#inputChequesCirculacion').val(response.menos_cheques_circulacion);
+	$('#inputAjusteBanco').val(response.mas_ajustes_banco);
+	// $('#inputSubtotalMenosBanco').val(response.sub_tercero);
+	// $('#inputSaldoConsiliadoBanco').val(response.saldo_conciliado);
 }
