@@ -270,51 +270,73 @@ if (isset($_POST["meses"]) && isset($_POST["anio"])) {
 		$response['sub_tercero'] = $sub_tercero;
 		$response['saldo_conciliado'] = $saldo_conciliado;
 	} else {
-		// Información sobre conciliación válida
-		$response['successConciliacion'] = true;
-		$response['mensajeConciliacion'] = "✅ La fecha ingresada se puede conciliar";
 
-		// Calcular transacciones y cheques
-		$transacciones = calcularTransacciones($conn, $mes_seleccionado, $anio);
-		$cheques = calcularCks($conn, $mes_seleccionado, $anio);
-
-		if ($transacciones !== null) {
-			foreach ($transacciones as $transaccion) {
-				$transaccion_codigo = $transaccion["numero_transaccion"];
-				$monto_transaccion = $transaccion["monto_transaccion"];
-
-				// Asignar el valor de la transacción al array $response, incluyendo 0
-				switch ($transaccion_codigo) {
-					case "1":
-						$response['mas_depositos'] = $monto_transaccion;
-						break;
-					case "2":
-						$response['mas_notas_credito'] = $monto_transaccion;
-						break;
-					case "3":
-						$response['mas_ajustes_libro'] = $monto_transaccion;
-						break;
-					case "4":
-						$response['menos_notas_debito'] = $monto_transaccion;
-						break;
-					case "5":
-						$response['menos_ajustes_libro'] = $monto_transaccion;
-						break;
-					case "6":
-						$response['mas_depositos_transito'] = $monto_transaccion;
-						break;
-					case "7":
-						$response['mas_ajustes_banco'] = $monto_transaccion;
-						break;
-						// Puedes agregar más casos según sea necesario
-				}
-			}
+		if ($mes_seleccionado == 1) {
+			$mes_anterior = 12;
+			$anio_anterior--;
+		} else {
+			$mes_anterior = $mes_seleccionado - 1;
 		}
 
-		// Asignar valores de cheques a `response`
-		$response['mas_cheques_anulados'] = $cheques["monto_cks_anulado"];
-		$response['menos_cheques_girados'] = $cheques["monto_cks_girado"];
-		$response['menos_cheques_circulacion'] = $cheques["monto_cks_circulacion"];
+		// Formatear el mes como "0N" si es necesario
+		$mes_anterior = sprintf("%02d", $mes_anterior);
+		$query_saldo_conciliado = $conn->prepare("SELECT saldo_conciliado FROM conciliacion WHERE mes = :mes_anterior");
+		$query_saldo_conciliado->bindParam(":mes_anterior", $mes_anterior);
+		$query_saldo_conciliado->execute();
+
+		if ($query_saldo_conciliado->rowCount() > 0) {
+			// Información sobre conciliación válida
+			$response['successConciliacion'] = true;
+			$response['mensajeConciliacion'] = "✅ La fecha ingresada se puede conciliar";
+
+			$row_saldo_conciliacion = $query_saldo_conciliado->fetch(PDO::FETCH_ASSOC);
+			$response["saldo_anterior"] = $row_saldo_conciliacion["saldo_conciliado"];
+
+			// Calcular transacciones y cheques
+			$transacciones = calcularTransacciones($conn, $mes_seleccionado, $anio);
+			$cheques = calcularCks($conn, $mes_seleccionado, $anio);
+
+			if ($transacciones !== null) {
+				foreach ($transacciones as $transaccion) {
+					$transaccion_codigo = $transaccion["numero_transaccion"];
+					$monto_transaccion = $transaccion["monto_transaccion"];
+
+					// Asignar el valor de la transacción al array $response, incluyendo 0
+					switch ($transaccion_codigo) {
+						case "1":
+							$response['mas_depositos'] = $monto_transaccion;
+							break;
+						case "2":
+							$response['mas_notas_credito'] = $monto_transaccion;
+							break;
+						case "3":
+							$response['mas_ajustes_libro'] = $monto_transaccion;
+							break;
+						case "4":
+							$response['menos_notas_debito'] = $monto_transaccion;
+							break;
+						case "5":
+							$response['menos_ajustes_libro'] = $monto_transaccion;
+							break;
+						case "6":
+							$response['mas_depositos_transito'] = $monto_transaccion;
+							break;
+						case "7":
+							$response['mas_ajustes_banco'] = $monto_transaccion;
+							break;
+							// Puedes agregar más casos según sea necesario
+					}
+				}
+			}
+
+			// Asignar valores de cheques a `response`
+			$response['mas_cheques_anulados'] = $cheques["monto_cks_anulado"];
+			$response['menos_cheques_girados'] = $cheques["monto_cks_girado"];
+			$response['menos_cheques_circulacion'] = $cheques["monto_cks_circulacion"];
+		} else {
+			$response['successConciliacion'] = false;
+			$response['mensajeConciliacion'] = "❌ No se puede realizar la conciliacion";
+		}
 	}
 } else {
 	$response['success'] = false;

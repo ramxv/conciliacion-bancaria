@@ -206,7 +206,7 @@ function validarCkCirculacion() {
 function grabarCirculacion(event) {
 	event.preventDefault();
 	let fecha_circulacion = document.getElementById("fecha-circulacion").value;
-	
+
 	// Crear un objeto FormData con los campos necesarios para la actualización
 	let formData = new FormData(document.getElementById("circulacion-form"));
 
@@ -305,8 +305,12 @@ function realizarConciliacion() {
 							llenarLabels(response);
 							vaciarCamposConciliacion();
 							llenarConciliacion(response);
+							calcularSubtotales();
 						} else {
-							$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">❌ Error desconocido</div>');
+							$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">' + response.mensajeConciliacion + '</div>');
+							vaciarCamposConciliacion();
+							vaciarLabels();
+							$("#inputSaldoBanco").attr('disabled', 'disabled');
 						}
 					}
 
@@ -333,6 +337,7 @@ function realizarConciliacion() {
 function resetMensaje() {
 	const mensajeCliente = document.getElementById('mensaje-cliente');
 	mensajeCliente.innerHTML = '';
+	vaciarLabels();
 }
 
 // * Esta funcón llena los campos del formulario (Anulación y Circulación) con los datos recibidos.
@@ -363,6 +368,9 @@ function llenarConciliacionRegistrada(response) {
 	$('#inputChequesCirculacion').val(response.menos_cheques_circulacion);
 	$('#inputAjusteBanco').val(response.mas_ajustes_banco);
 	$('#inputSubtotalMenosBanco').val(response.sub_tercero);
+	let sub3 = parseFloat($('#inputSubtotalMenosBanco').val());
+	let sub3Formateado = formatearNumeroNegativo(sub3);
+	parseFloat($('#inputSubtotalMenosBanco').val(sub3Formateado));
 	$('#inputSaldoConsiliadoBanco').val(response.saldo_conciliado);
 }
 
@@ -380,8 +388,16 @@ function llenarLabels(response) {
 	$('#labelSaldoConsiliadoLibros').html(`<strong>SALDO CONCILIADO SEGÚN LIBROS AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
 	$('#labelSaldoBanco').html(`<strong>SALDO EN BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
 	$('#labelSaldoConsiliadoBanco').html(`<strong>SALDO CONCILIADO IGUAL A BANCO AL ${dia_actual} de ${mes_actual} de ${anio}</strong>`);
-
 }
+
+function vaciarLabels() {
+	// Vaciar los labels seleccionando cada uno por su ID 
+	$('#labelSaldoLibro').html(`<strong>SALDO SEGÚN LIBRO AL</strong>`);
+	$('#labelSaldoConsiliadoLibros').html(`<strong>SALDO CONCILIADO SEGÚN LIBROS AL</strong>`);
+	$('#labelSaldoBanco').html(`<strong>SALDO EN BANCO AL</strong>`);
+	$('#labelSaldoConsiliadoBanco').html(`<strong>SALDO CONCILIADO IGUAL A BANCO AL</strong>`);
+}
+
 
 function vaciarCamposConciliacion() {
 	// Vaciar los campos de entrada seleccionando cada uno por su ID y estableciendo su valor en una cadena vacía ('')
@@ -406,23 +422,67 @@ function vaciarCamposConciliacion() {
 }
 
 function llenarConciliacion(response) {
-	// $('#inputSaldoLibro').val(response.saldo_anterior);
+	$('#inputSaldoLibro').val(response.saldo_anterior);
 	$('#inputDeposito').val(response.mas_depositos);
 	$('#inputChequesAnulados').val(response.mas_cheques_anulados);
 	$('#inputNotasCredito').val(response.mas_notas_credito);
 	$('#inputAjustesLibro').val(response.mas_ajustes_libro);
-	console.log(response.mas_notas_credito);
-	// $('#inputSubtotal').val(response.sub_primera);
-	// $('#inputSubtotalFinal').val(response.subtotal_primera);
 	$('#inputCkGirados').val(response.menos_cheques_girados);
 	$('#inputNotasDebito').val(response.menos_notas_debito);
 	$('#inputAjusteCkGirados').val(response.menos_ajustes_libro);
-	// $('#inputSubtotalMenosLibros').val(response.sub_segunda);
-	// $('#inputSaldoConsiliadoLibros').val(response.saldo_libros);
-	// $('#inputSaldoBanco').val(response.saldo_banco);
 	$('#inputDepositoTransito').val(response.mas_depositos_transito);
 	$('#inputChequesCirculacion').val(response.menos_cheques_circulacion);
 	$('#inputAjusteBanco').val(response.mas_ajustes_banco);
-	// $('#inputSubtotalMenosBanco').val(response.sub_tercero);
-	// $('#inputSaldoConsiliadoBanco').val(response.saldo_conciliado);
+}
+
+function calcularSubtotales() {
+	// ! Obtener saldo conciliado
+	let saldo_conciliado_anterior = parseFloat($('#inputSaldoLibro').val());
+
+	// ! Sección 1
+	let input_deposito = parseFloat($('#inputDeposito').val());
+	let input_cks_anulado = parseFloat($('#inputChequesAnulados').val());
+	let input_notas_credito = parseFloat($('#inputNotasCredito').val());
+	let input_ajuste_libro = parseFloat($('#inputAjustesLibro').val());
+	let sub1 = input_deposito + input_cks_anulado + input_notas_credito + input_ajuste_libro;
+	$('#inputSubtotal').val(sub1);
+	let subtotal_primera = saldo_conciliado_anterior + sub1;
+	$('#inputSubtotalFinal').val(subtotal_primera);
+
+	// ! Sección 2
+	let input_cks_girados = parseFloat($('#inputCkGirados').val());
+	let input_notas_debito = parseFloat($('#inputNotasDebito').val());
+	let input_ajuste_cks_girados = parseFloat($('#inputAjusteCkGirados').val());
+	let sub2 = input_cks_girados + input_notas_debito + input_ajuste_cks_girados;
+	$('#inputSubtotalMenosLibros').val(sub2);
+	let subtotal_segunda = subtotal_primera - sub2;
+	$('#inputSaldoConsiliadoLibros').val(subtotal_segunda);
+
+	// ! Sección 3
+	let input_deposito_transito = parseFloat($('#inputDepositoTransito').val());
+	let input_cks_circulacion = parseFloat($('#inputChequesCirculacion').val());
+	let input_ajuste_banco = parseFloat($('#inputAjusteBanco').val());
+
+	let sub3 = input_deposito_transito - input_cks_circulacion + input_ajuste_banco;
+	let sub3Formateado = formatearNumeroNegativo(sub3);
+	$('#inputSubtotalMenosBanco').val(sub3Formateado);
+
+	let input_saldo_banco = 0;
+	document.getElementById("inputSaldoBanco").addEventListener("blur", function () {
+		input_saldo_banco = parseFloat($('#inputSaldoBanco').val());
+		let sub_tercero = parseFloat(sub3 + input_saldo_banco);
+		$('#inputSaldoConsiliadoBanco').val(sub_tercero);
+	});
+}
+
+function formatearNumeroNegativo(valor) {
+	// Convertir el valor a número
+	let numero = parseFloat(valor);
+
+	// Si el número es negativo, devolverlo entre paréntesis
+	if (numero < 0) {
+		return `(${Math.abs(numero).toFixed(2)})`;
+	}
+	// Si no es negativo, devolver el número normalmente
+	return numero.toFixed(2);
 }
