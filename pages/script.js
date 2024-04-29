@@ -21,7 +21,6 @@ function grabarCheques(event) {
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			try {
-				console.log(xhr.responseText);
 				var response = JSON.parse(xhr.responseText);
 				console.log(response);
 				if (response.success) {
@@ -53,7 +52,6 @@ function validarNumCheque() {
 			data: { numCheque: numCheque },
 			success: function (response) {
 				try {
-					console.log(response);
 					if (response.successNumCk) {
 						// El número de cheque es válido
 						$('.error-container').html('<div class="alert alert-success" role="alert">' + response.mensajeNumCk + '</div>');
@@ -69,7 +67,6 @@ function validarNumCheque() {
 				}
 			},
 			error: function (xhr, status, error) {
-				console.error(error);
 				$('.error-container').html('<div class="alert alert-danger" role="alert">Error al conectar con el servidor</div>');
 				disableFields();
 			}
@@ -99,9 +96,6 @@ function grabarAnulacion(event) {
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			try {
-				// Registrar la respuesta completa del servidor
-				console.log('Respuesta completa del servidor:', xhr.responseText);
-
 				// Analizar la respuesta JSON del servidor
 				var response = JSON.parse(xhr.responseText);
 
@@ -263,7 +257,6 @@ function grabarOtrasTransacciones(event) {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 			try {
 				var response = JSON.parse(xhr.responseText);
-				console.log(response);
 				if (response.success) {
 					console.log('Respuesta del servidor:', response.mensaje);
 					$('.error-container').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
@@ -291,7 +284,6 @@ function realizarConciliacion() {
 			dataType: 'json',
 			data: { meses: mes, anio: anio },
 			success: function (response) {
-				console.log(response);
 				try {
 					if (response.success) {
 						// El número de cheque es válido
@@ -300,6 +292,7 @@ function realizarConciliacion() {
 						llenarConciliacionRegistrada(response);
 						$("#inputSaldoBanco").attr('disabled', 'disabled');
 					} else {
+						$('#inputSaldoBanco').removeAttr('disabled');
 						if (response.successConciliacion) {
 							$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensajeConciliacion + '</div>');
 							llenarLabels(response);
@@ -325,8 +318,7 @@ function realizarConciliacion() {
 			}
 		});
 	} else {
-		// Error: hay campos sin llenar
-		$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert">' + response.mensaje + '</div>');
+		$('#mensaje-cliente').html('<div class="alert alert-warning" role="alert">⚠️ Ingrese la fecha antes de realizar la conciliacion </div>')
 		$('#inputSaldoBanco').attr('disabled', 'disabled');
 	}
 }

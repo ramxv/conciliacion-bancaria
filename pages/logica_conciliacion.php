@@ -338,9 +338,6 @@ if (isset($_POST["meses"]) && isset($_POST["anio"])) {
 			$response['mensajeConciliacion'] = "❌ No se puede realizar la conciliacion";
 		}
 	}
-} else {
-	$response['success'] = false;
-	$response['mensaje'] = "⚠️ Completa todos los campos antes de continuar";
 }
 
 // Establecer la cabecera de contenido JSON
