@@ -1,51 +1,11 @@
-<?php require "../php/db_conciliacion.php";
-
-$queryTransaccionesLibros = $conn->query("SELECT * FROM transacciones LIMIT 5");
-$queryTransaccionesBanco = $conn->query("SELECT * FROM transacciones LIMIT 2 OFFSET 5");
-$queryTransaccionesTransferencia = $conn->query("SELECT * FROM transacciones LIMIT 2 OFFSET 7");
-
-$warning = null;
-$error = null;
-$correcto = null;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $transaccion = $_POST["transaccion"];
-  $fecha_transaccion = $_POST["fecha_transaccion"];
-  $monto_transaccion = $_POST["monto_transaccion"];
-  if (empty($transaccion) || empty($fecha_transaccion) || empty($monto_transaccion)) {
-    $warning = "⚠️ Llene todos los campos";
-  } else {
-    $correcto = "✅ Se registro exitosamente la transacción";
-    $statement = $conn->prepare("INSERT INTO otros (transaccion, fecha, monto) VALUES (:transaccion, :fecha_transaccion, :monto_transaccion)");
-    $statement->bindParam(':transaccion', $transaccion);
-    $statement->bindParam(':fecha_transaccion', $fecha_transaccion);
-    $statement->bindParam(':monto_transaccion', $monto_transaccion);
-    try {
-      $statement->execute();
-      $correcto = "✅ Se registro exitosamente la transacción.";
-    } catch (PDOException $e) {
-      $error = "❌ Error al registrar transacción: " . $e->getMessage();
-    }
-  }
-}
-
-?>
-
-<?php require "../includes/header.php" ?>
+<?php require "../php/db_conciliacion.php"; ?>
+<?php require "logica_otrasTransacciones.php"; ?>
 
 <div class="container w-50">
-  <form action="" class="border border-secondary-subtle rounded" method="post">
+  <form class="border border-secondary-subtle rounded" method="post" id="otras-transacciones-form" onsubmit="grabarOtrasTransacciones(event)">
     <h3 class="form-header p-3 border-bottom border-secondary-subtle ">Otras Transacciones - Depósitos, Ajustes y Notas (Db / Cr)</h3>
     <div class="row justify-content-center p-3">
-      <?php if ($warning) : ?>
-        <div class="p-3">
-          <div class="warning-container alert alert-warning" role="alert"><?= $warning ?></div>
-        </div>
-      <?php elseif ($correcto) : ?>
-        <div class="p-3">
-          <div class="correcto-container alert alert-success" role="alert"><?= $correcto ?></div>
-        </div>
-      <?php endif ?>
+		<div class="error-container" id="mensaje-cliente"></div>
       <div class="col-4">
         <label for="transacciones" class="form-label">Transacciones</label>
         <select class="form-select" aria-label="Transacciones" id="transacciones" name="transaccion">
@@ -80,9 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <div class="d-flex gap-2 justify-content-md-center p-3" id="btn-custom-container">
       <button type="submit" class="btn button-custom" id="btn-custom">Grabar</button>
-      <button type="reset" class="btn button-custom" id="btn-custom">Nuevo</button>
+      <button type="reset" class="btn button-custom" id="btn-custom" onclick="resetMensaje()">Nuevo</button>
     </div>
   </form>
 </div>
-
-<?php require "../includes/footer.php" ?>
