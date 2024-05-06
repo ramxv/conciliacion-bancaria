@@ -136,44 +136,42 @@ function calcularCks($conn, $mes_seleccionado, $anio)
 	$total_monto_girado = 0;
 
 	// Calcular cheques anulados
-	$statement_cks_anulado = $conn->prepare("SELECT fecha_anulado, SUM(monto) as total_monto_cks_anulado FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes GROUP BY fecha_anulado");
+	$statement_cks_anulado = $conn->prepare("SELECT fecha_anulado, SUM(monto) as total_monto_cks_anulado FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes AND fecha_anulado IS NOT NULL");
 	$statement_cks_anulado->bindParam(":anio", $anio);
 	$statement_cks_anulado->bindParam(":mes", $mes_seleccionado);
 	$statement_cks_anulado->execute();
 
 	if ($statement_cks_anulado->rowCount() > 0) {
 		while ($row_cks = $statement_cks_anulado->fetch(PDO::FETCH_ASSOC)) {
-			if ($row_cks["fecha_anulado"] === "0000-00-00" || $row_cks["fecha_anulado"] === null) {
+			if ($row_cks["fecha_anulado"] !== "0000-00-00" || $row_cks["fecha_anulado"] !== null) {
 				$total_monto_anulado = $row_cks["total_monto_cks_anulado"];
 			}
 		}
 	}
 
 	// Calcular cheques fuera de circulación
-	$statement_cks_circulacion = $conn->prepare("SELECT fecha_circulacion, SUM(monto) as total_monto_cks_circulacion FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes GROUP BY fecha_circulacion");
+	$statement_cks_circulacion = $conn->prepare("SELECT fecha_circulacion, SUM(monto) as total_monto_cks_circulacion FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes AND fecha_circulacion IS NOT NULL");
 	$statement_cks_circulacion->bindParam(":anio", $anio);
 	$statement_cks_circulacion->bindParam(":mes", $mes_seleccionado);
 	$statement_cks_circulacion->execute();
 
 	if ($statement_cks_circulacion->rowCount() > 0) {
 		while ($row_cks = $statement_cks_circulacion->fetch(PDO::FETCH_ASSOC)) {
-			if ($row_cks["fecha_circulacion"] === "0000-00-00" || $row_cks["fecha_circulacion"] === null) {
+			if ($row_cks["fecha_circulacion"] !== "0000-00-00" || $row_cks["fecha_circulacion"] !== null) {
 				$total_monto_circulacion = $row_cks["total_monto_cks_circulacion"];
 			}
 		}
 	}
 
 	// Calcular cheques girados
-	$statement_cks_girados = $conn->prepare("SELECT fecha_anulado, fecha_circulacion, SUM(monto) as total_monto_cks_girado FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes GROUP BY fecha_anulado, fecha_circulacion LIMIT 100");
+	$statement_cks_girados = $conn->prepare("SELECT SUM(monto) as total_monto_cks_girado FROM cheques WHERE EXTRACT(YEAR FROM fecha) = :anio AND EXTRACT(MONTH FROM fecha) = :mes");
 	$statement_cks_girados->bindParam(":anio", $anio);
 	$statement_cks_girados->bindParam(":mes", $mes_seleccionado);
 	$statement_cks_girados->execute();
 
 	if ($statement_cks_girados->rowCount() > 0) {
 		while ($row_cks = $statement_cks_girados->fetch(PDO::FETCH_ASSOC)) {
-			if (($row_cks["fecha_anulado"] === "0000-00-00" || $row_cks["fecha_anulado"] === null) && ($row_cks["fecha_circulacion"] === "0000-00-00" || $row_cks["fecha_circulacion"] === null)) {
-				$total_monto_girado = $row_cks["total_monto_cks_girado"];
-			}
+			$total_monto_girado = $row_cks["total_monto_cks_girado"];
 		}
 	}
 
@@ -280,8 +278,9 @@ if (isset($_POST["meses"]) && isset($_POST["anio"])) {
 
 		// Formatear el mes como "0N" si es necesario
 		$mes_anterior = sprintf("%02d", $mes_anterior);
-		$query_saldo_conciliado = $conn->prepare("SELECT saldo_conciliado FROM conciliacion WHERE mes = :mes_anterior");
+		$query_saldo_conciliado = $conn->prepare("SELECT saldo_conciliado FROM conciliacion WHERE mes = :mes_anterior AND agno = :anio");
 		$query_saldo_conciliado->bindParam(":mes_anterior", $mes_anterior);
+		$query_saldo_conciliado->bindParam(":anio", $anio);
 		$query_saldo_conciliado->execute();
 
 		if ($query_saldo_conciliado->rowCount() > 0) {

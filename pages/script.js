@@ -24,7 +24,6 @@ function grabarCheques(event) {
 				var response = JSON.parse(xhr.responseText);
 				console.log(response);
 				if (response.success) {
-					console.log('Respuesta del servidor:', response.mensaje);
 					$('.error-container').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
 				} else {
 					console.error('Error en el servidor:', response.error);
@@ -101,7 +100,6 @@ function grabarAnulacion(event) {
 
 				if (response.success) {
 					// Mostrar mensaje de éxito si se completó la actualización
-					console.log('Cheque anulado correctamente:', response.mensaje);
 					$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
 				} else {
 					// Mostrar mensaje de error si hubo problemas en la actualización
@@ -112,10 +110,6 @@ function grabarAnulacion(event) {
 				console.error('Error al analizar la respuesta del servidor:', e);
 				$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error al analizar la respuesta del servidor</div>');
 			}
-		} else {
-			// Manejo de errores HTTP
-			console.error('Error HTTP:', xhr.status, xhr.statusText);
-			$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error en la solicitud HTTP</div>');
 		}
 	};
 	// Configurar la solicitud AJAX como POST
@@ -221,7 +215,6 @@ function grabarCirculacion(event) {
 
 				if (response.success) {
 					// Mostrar mensaje de éxito si se completó la actualización
-					console.log('Cheque anulado correctamente:', response.mensaje);
 					$('#mensaje-cliente').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
 				} else {
 					// Mostrar mensaje de error si hubo problemas en la actualización
@@ -232,10 +225,6 @@ function grabarCirculacion(event) {
 				console.error('Error al analizar la respuesta del servidor:', e);
 				$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error al analizar la respuesta del servidor</div>');
 			}
-		} else {
-			// Manejo de errores HTTP
-			console.error('Error HTTP:', xhr.status, xhr.statusText);
-			$('#mensaje-cliente').html('<div class="alert alert-danger" role="alert">Error en la solicitud HTTP</div>');
 		}
 	};
 	// Configurar la solicitud AJAX como POST
@@ -258,7 +247,6 @@ function grabarOtrasTransacciones(event) {
 			try {
 				var response = JSON.parse(xhr.responseText);
 				if (response.success) {
-					console.log('Respuesta del servidor:', response.mensaje);
 					$('.error-container').html('<div class="alert alert-success" role="alert">' + response.mensaje + '</div>');
 				} else {
 					console.error('Error en el servidor:', response.error);
@@ -322,6 +310,46 @@ function realizarConciliacion() {
 		$('#inputSaldoBanco').attr('disabled', 'disabled');
 	}
 }
+
+function grabarConciliacion(event) {
+  
+	event.preventDefault();
+
+  let formData = new FormData(document.getElementById("form-conciliacion"));
+
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function () {  
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        try {
+          var response = JSON.parse(xhr.responseText);
+
+          const errorContainer = document.getElementById("mensaje-cliente");
+
+          if (response.success) {
+            errorContainer.innerHTML =
+              '<div class="alert alert-success" role="alert">' +
+              response.mensaje +
+              "</div>";
+          } else {
+            console.error("Error en el servidor:", response.error);
+            errorContainer.innerHTML =
+              '<div class="alert alert-danger" role="alert">' +
+              response.error +
+              "</div>";
+          }
+        } catch (e) {
+          console.error("Error al analizar la respuesta del servidor:", e);
+        }
+      } else {
+        console.error("Error en la solicitud: ", xhr.statusText);
+      }
+    }
+  };
+  xhr.open("POST", "logica_grabarConciliacion.php", true);
+  xhr.send(formData);
+}
+
 
 
 // ! ========================================		Sección Funciones	Complementarias		==============================================
@@ -428,44 +456,70 @@ function llenarConciliacion(response) {
 }
 
 function calcularSubtotales() {
-	// ! Obtener saldo conciliado
-	let saldo_conciliado_anterior = parseFloat($('#inputSaldoLibro').val());
+  // Obtener saldo conciliado
+  let saldo_conciliado_anterior = parseFloat($("#inputSaldoLibro").val());
 
-	// ! Sección 1
-	let input_deposito = parseFloat($('#inputDeposito').val());
-	let input_cks_anulado = parseFloat($('#inputChequesAnulados').val());
-	let input_notas_credito = parseFloat($('#inputNotasCredito').val());
-	let input_ajuste_libro = parseFloat($('#inputAjustesLibro').val());
-	let sub1 = input_deposito + input_cks_anulado + input_notas_credito + input_ajuste_libro;
-	$('#inputSubtotal').val(sub1);
-	let subtotal_primera = saldo_conciliado_anterior + sub1;
-	$('#inputSubtotalFinal').val(subtotal_primera);
+  // Sección 1
+  let input_deposito = parseFloat($("#inputDeposito").val());
+  let input_cks_anulado = parseFloat($("#inputChequesAnulados").val());
+  let input_notas_credito = parseFloat($("#inputNotasCredito").val());
+  let input_ajuste_libro = parseFloat($("#inputAjustesLibro").val());
+  let sub1 =
+    input_deposito +
+    input_cks_anulado +
+    input_notas_credito +
+    input_ajuste_libro;
+  // Redondea a dos decimales
+  sub1 = sub1.toFixed(2);
+  $("#inputSubtotal").val(sub1);
 
-	// ! Sección 2
-	let input_cks_girados = parseFloat($('#inputCkGirados').val());
-	let input_notas_debito = parseFloat($('#inputNotasDebito').val());
-	let input_ajuste_cks_girados = parseFloat($('#inputAjusteCkGirados').val());
-	let sub2 = input_cks_girados + input_notas_debito + input_ajuste_cks_girados;
-	$('#inputSubtotalMenosLibros').val(sub2);
-	let subtotal_segunda = subtotal_primera - sub2;
-	$('#inputSaldoConsiliadoLibros').val(subtotal_segunda);
+  let subtotal_primera = saldo_conciliado_anterior + parseFloat(sub1);
+  // Redondea a dos decimales
+  subtotal_primera = subtotal_primera.toFixed(2);
+  $("#inputSubtotalFinal").val(subtotal_primera);
 
-	// ! Sección 3
-	let input_deposito_transito = parseFloat($('#inputDepositoTransito').val());
-	let input_cks_circulacion = parseFloat($('#inputChequesCirculacion').val());
-	let input_ajuste_banco = parseFloat($('#inputAjusteBanco').val());
+  // Sección 2
+  let input_cks_girados = parseFloat($("#inputCkGirados").val());
+  let input_notas_debito = parseFloat($("#inputNotasDebito").val());
+  let input_ajuste_cks_girados = parseFloat($("#inputAjusteCkGirados").val());
+  let sub2 = input_cks_girados + input_notas_debito + input_ajuste_cks_girados;
+  // Redondea a dos decimales
+  sub2 = sub2.toFixed(2);
+  $("#inputSubtotalMenosLibros").val(sub2);
 
-	let sub3 = input_deposito_transito - input_cks_circulacion + input_ajuste_banco;
-	let sub3Formateado = formatearNumeroNegativo(sub3);
-	$('#inputSubtotalMenosBanco').val(sub3Formateado);
+  let subtotal_segunda = parseFloat(subtotal_primera) - parseFloat(sub2);
+  // Redondea a dos decimales
+  subtotal_segunda = subtotal_segunda.toFixed(2);
+  $("#inputSaldoConsiliadoLibros").val(subtotal_segunda);
 
-	let input_saldo_banco = 0;
-	document.getElementById("inputSaldoBanco").addEventListener("blur", function () {
-		input_saldo_banco = parseFloat($('#inputSaldoBanco').val());
-		let sub_tercero = parseFloat(sub3 + input_saldo_banco);
-		$('#inputSaldoConsiliadoBanco').val(sub_tercero);
-	});
+  // Sección 3
+  let input_deposito_transito = parseFloat($("#inputDepositoTransito").val());
+  let input_cks_circulacion = parseFloat($("#inputChequesCirculacion").val());
+  let input_ajuste_banco = parseFloat($("#inputAjusteBanco").val());
+
+  let sub3 =
+    input_deposito_transito - input_cks_circulacion + input_ajuste_banco;
+  // Redondea a dos decimales
+  sub3 = sub3.toFixed(2);
+  // Aplica el formateo de número negativo
+  let sub3Formateado = formatearNumeroNegativo(sub3);
+  $("#inputSubtotalMenosBanco").val(sub3Formateado);
+
+  let input_saldo_banco = 0;
+  document
+    .getElementById("inputSaldoBanco")
+    .addEventListener("blur", function () {
+      input_saldo_banco = parseFloat($("#inputSaldoBanco").val());
+      let sub_tercero = parseFloat(sub3 + input_saldo_banco).toFixed(2);
+			
+      $("#inputSaldoConsiliadoBanco").val(sub_tercero);
+      if (isNaN($("#inputSaldoConsiliadoBanco").val())) {
+        $("#inputSaldoConsiliadoBanco").val(0);
+      }
+    });
 }
+
+
 
 function formatearNumeroNegativo(valor) {
 	// Convertir el valor a número
