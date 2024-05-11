@@ -15,8 +15,6 @@
 	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
 		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-	<!-- JavaScript personalizado -->
-	<script defer src="script.js"></script>
 	<!-- Título de la página -->
 	<title>Horizon</title>
 </head>
@@ -47,7 +45,8 @@
 						</a>
 						<ul class="dropdown-menu pe-4" aria-labelledby="navbarDropdownMenuLink">
 							<li><a class="dropdown-item" href="#" onclick="cargarPagina('ui_anulacion.php')">Anulación</a></li>
-							<li><a class="dropdown-item" href="#" onclick="cargarPagina('ui_sacarCirculacion.php')">Sacar de circulación</a>
+							<li><a class="dropdown-item" href="#" onclick="cargarPagina('ui_sacarCirculacion.php')">Sacar de
+									circulación</a>
 							</li>
 						</ul>
 					</li>
@@ -64,6 +63,9 @@
 					<li class="nav-item pe-4" id="nav-item-custom">
 						<a class="nav-link text-white" href="#">Mantenimiento</a>
 					</li>
+					<li class="nav-item pe-4" id="nav-item-custom">
+						<a class="nav-link text-white" href="#" onclick="cargarPagina('ui_asistencia.php')">Asistencia</a>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -72,35 +74,38 @@
 	<div id="contenido">
 		<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="height: 100vh;">
 			<div class="carousel-indicators">
-				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+					aria-current="true" aria-label="Slide 1"></button>
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+					aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+					aria-label="Slide 3"></button>
 			</div>
 			<!-- Ajusta la altura del carrusel -->
 			<div class="carousel-inner">
 				<div class="carousel-item active">
 					<img src="../assets/images/slide/img1.jpg" class="d-block w-100 img-fluid"
 						style="height: 100vh; object-fit: cover;" alt="...">
-						<div class="carousel-caption d-none d-md-block" id="carousel-custom">
-							<h5>Impulsa tu éxito financiero📈</h5>
-							<p>Con nuestras soluciones personalizadas. 💼 Descubre cómo podemos ayudarte a alcanzar tus objetivos.</p>
-						</div>
+					<div class="carousel-caption d-none d-md-block" id="carousel-custom">
+						<h5>Impulsa tu éxito financiero📈</h5>
+						<p>Con nuestras soluciones personalizadas. 💼 Descubre cómo podemos ayudarte a alcanzar tus objetivos.</p>
+					</div>
 				</div>
 				<div class="carousel-item">
 					<img src="../assets/images/slide/img2.jpg" class="d-block w-100 img-fluid"
 						style="height: 100vh; object-fit: cover;" alt="...">
-						<div class="carousel-caption d-none d-md-block" id="carousel-custom">
-							<h5 id="titulo-carousel">Maximiza tus oportunidades financieras💵</h5>
-							<p>Tu éxito es nuestra prioridad. 💰 Ofrecemos estrategias innovadoras para maximizar tus recursos.</p>
-						</div>
+					<div class="carousel-caption d-none d-md-block" id="carousel-custom">
+						<h5 id="titulo-carousel">Maximiza tus oportunidades financieras💵</h5>
+						<p>Tu éxito es nuestra prioridad. 💰 Ofrecemos estrategias innovadoras para maximizar tus recursos.</p>
+					</div>
 				</div>
 				<div class="carousel-item">
 					<img src="../assets/images/slide/img3.jpg" class="d-block w-100 img-fluid"
 						style="height: 100vh; object-fit: cover;" alt="...">
-						<div class="carousel-caption d-none d-md-block" id="carousel-custom">
-							<h5>Confía en los expertos😎</h5>
-							<p>Con más de 20 años de experiencia, brindamos soluciones financieras a la medida de tu empresa. 🏦</p>
-						</div>
+					<div class="carousel-caption d-none d-md-block" id="carousel-custom">
+						<h5>Confía en los expertos😎</h5>
+						<p>Con más de 20 años de experiencia, brindamos soluciones financieras a la medida de tu empresa. 🏦</p>
+					</div>
 				</div>
 			</div>
 			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
@@ -119,8 +124,11 @@
 
 	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-		crossorigin="anonymous"></script>
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+		</script>
+
+	<!-- JavaScript personalizado -->
+	<script src="script.js"></script>
 
 	<script src="validations.js"></script>
 
