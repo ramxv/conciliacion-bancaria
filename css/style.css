@@ -90,7 +90,7 @@
   color: #00008b;
 }
 
-#btn-custom-container > .btn-send-custom:hover svg {
+#btn-custom-container > .btn-send-custom:hover > svg{
   fill: #00008b; /* Cambia el color del SVG cuando el botón es hover */
 }
 
@@ -112,10 +112,6 @@ svg {
   color: #00008b;
 }
 
-#btn-custom-container-2 > .btn-send-custom:hover svg {
-  fill: #00008b; /* Cambia el color del SVG cuando el botón es hover */
-}
-
-svg {
-  fill: #fff;
+#btn-custom-container-2 > .btn-send-custom:hover > svg{
+	fill: #00008b;
 }
