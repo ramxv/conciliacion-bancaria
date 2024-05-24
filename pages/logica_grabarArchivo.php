@@ -1,4 +1,5 @@
-<?php require "../php/db_conciliacion.php";
+<?php
+require "../php/db_conciliacion.php";
 
 $datos_procesados = [];
 $response = array();
@@ -30,7 +31,7 @@ if (isset($_FILES['file-datos']) && $_FILES['file-datos']['error'] === UPLOAD_ER
 			];
 		}
 
-		$statement = $conn->prepare("INSERT INTO datos (codigo,fecha,hora,filler1,filler2,filler3,filler4) VALUES (:cod, :fecha, :hora, :f1, :f2, :f3, :f4)");
+		$statement = $conn->prepare("INSERT INTO datos (codigo, fecha, hora, filler1, filler2, filler3, filler4) VALUES (:cod, :fecha, :hora, :f1, :f2, :f3, :f4)");
 		foreach ($datos_procesados as $datos) {
 			try {
 				$statement->execute([
@@ -51,11 +52,9 @@ if (isset($_FILES['file-datos']) && $_FILES['file-datos']['error'] === UPLOAD_ER
 		// Cierra el archivo después de leer
 		fclose($file);
 	} else {
-		echo "El archivo no existe.";
+	
 	}
 } else {
-	// Maneja el caso en el que 'file-datos' no existe
-	echo "No se encontró la clave 'file-datos' en el array \$_POST.";
 	exit;
 }
 header('Content-Type: application/json');

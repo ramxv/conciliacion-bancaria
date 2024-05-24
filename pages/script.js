@@ -8,95 +8,102 @@ function cargarPagina(page) {
     .catch((error) => console.error("Error al cargar la página:", error));
 }
 
+// * Función auxiliar para realizar solicitudes AJAX
+function sendAjaxRequest(url, method, data, onSuccess, onError) {
+  fetch(url, {
+    method: method,
+    body: data instanceof FormData ? data : JSON.stringify(data),
+    headers: data instanceof FormData ? {} : {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => onSuccess(data))
+  .catch(error => onError(error));
+}
+
+
 // ! ======================================== 			Sección de Grabar Cheque 						==============================================
 
 // * Función para grabar cheques
+// Función para grabar cheques
 function grabarCheques(event) {
   event.preventDefault();
 
   let form_data = new FormData(document.getElementById("cheques-form"));
 
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      try {
-        var response = JSON.parse(xhr.responseText);
-        console.log(response);
-        if (response.success) {
-          $(".error-container").html(
-            '<div class="alert alert-success" role="alert">' +
-              response.mensaje +
-              "</div>"
-          );
-        } else {
-          console.error("Error en el servidor:", response.error);
-          $(".error-container").html(
-            '<div class="alert alert-danger" role="alert">' +
-              response.error +
-              "</div>"
-          );
-        }
-      } catch (e) {
-        console.error("Error al analizar la respuesta del servidor:", e);
+  sendAjaxRequest(
+    "logica_cheque.php",
+    "POST",
+    form_data,
+    function(response) {
+      if (response.success) {
+        $(".error-container").html(
+          '<div class="alert alert-success" role="alert">' +
+          response.mensaje +
+          "</div>"
+        );
+      } else {
+        console.error("Error en el servidor:", response.error);
+        $(".error-container").html(
+          '<div class="alert alert-danger" role="alert">' +
+          response.error +
+          "</div>"
+        );
       }
+    },
+    function(error) {
+      console.error("Error al enviar la solicitud:", error);
+      $(".error-container").html(
+        '<div class="alert alert-danger" role="alert">Error al enviar la solicitud</div>'
+      );
     }
-  };
-  xhr.open("POST", "logica_cheque.php", true);
-  xhr.send(form_data);
+  );
 }
 
+
 // * Función para validar el número del cheque
+// Función para validar el número del cheque
 function validarNumCheque() {
   let numCheque = document.getElementById("numCkInput").value.trim();
-  console.log(numCheque);
   if (numCheque !== "") {
-    console.log(numCheque);
-    $.ajax({
-      type: "POST",
-      url: "logica_cheque.php",
-      dataType: "json", // Especifica que esperamos una respuesta JSON
-      data: { numCheque: numCheque },
-      success: function (response) {
-        try {
-          if (response.successNumCk) {
-            // El número de cheque es válido
-            $(".error-container").html(
-              '<div class="alert alert-success" role="alert">' +
-                response.mensajeNumCk +
-                "</div>"
-            );
-            enableFields();
-          } else {
-            $(".error-container").html(
-              '<div class="alert alert-danger" role="alert"> ' +
-                response.mensajeNumCk +
-                " </div>"
-            );
-            disableFields();
-          }
-        } catch (error) {
-          console.error("Error al analizar la respuesta JSON:", error);
+    sendAjaxRequest(
+      "logica_cheque.php",
+      "POST",
+      { numCheque: numCheque },
+      function(response) {
+        if (response.successNumCk) {
           $(".error-container").html(
-            '<div class="alert alert-danger" role="alert">Error al analizar la respuesta del servidor</div>'
+            '<div class="alert alert-success" role="alert">' +
+            response.mensajeNumCk +
+            "</div>"
+          );
+          enableFields();
+        } else {
+          $(".error-container").html(
+            '<div class="alert alert-danger" role="alert"> ' +
+            response.mensajeNumCk +
+            " </div>"
           );
           disableFields();
         }
       },
-      error: function (xhr, status, error) {
+      function(error) {
+        console.error("Error al conectar con el servidor:", error);
         $(".error-container").html(
           '<div class="alert alert-danger" role="alert">Error al conectar con el servidor</div>'
         );
         disableFields();
-      },
-    });
+      }
+    );
   } else {
-    // Error: número de cheque no recibido
     $(".error-container").html(
       '<div class="alert alert-danger" role="alert">Error: número de cheque no recibido.</div>'
     );
     disableFields();
   }
 }
+
 
 // ! ======================================== 			Sección Anulación de Cheque 				==============================================
 // * Función para grabar Anulación
@@ -495,6 +502,24 @@ function grabarArchivoAsistencia(e) {
   xhr.send(formData);
 }
 
+function mostrarReporte(event) {
+	event.preventDefault(); // Evita el comportamiento predeterminado de envío del formulario
+
+	var fechaDesde = document.getElementById('fecha-desde-input').value;
+	var fechaHasta = document.getElementById('fecha-hasta-input').value;
+	var codigoMarcacion = document.getElementById('inputNombres').value;
+
+	// Abrir el reporte en una nueva ventana
+	var reporteUrl = `reporte.php?fecha-desde=${fechaDesde}&fecha-hasta=${fechaHasta}&codigo-marcacion=${codigoMarcacion}`;
+	window.open(reporteUrl, '_blank');
+}
+
+function mostrarModalEsperar() {
+	var modalEsperando = new bootstrap.Modal(
+		document.getElementById("modalEsperando")
+	);
+	modalEsperando.show();
+}
 
 // ! ========================================		Sección Funciones	Complementarias		==============================================
 
