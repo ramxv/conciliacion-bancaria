@@ -105,8 +105,29 @@ $consultaRRHH = $conn->query("SELECT codigo_marcacion, nombre1, apellido1 FROM r
 			</div>
 			<div class="modal-body" id="mensajeErrorModal">El archivo se está enviando... ⌛</div>
 			<div class="modal-footer">
-				<button type="button" class="mt-4 px-3 py-2 btn btn-primary btn-modal-custom" id="okButton">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" fill="white" height="16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg> OK
+				<button type="button" class="mt-4 px-3 py-2 btn btn-primary btn-modal-custom" id="okButtonEsperar">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" fill="white" height="16">
+						<path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path>
+					</svg> OK
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade text-dark" id="modalError" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Hubo un Error! ❌</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="mensajeErrorModal">La Fecha de Inicio no puede ser mayor a la Fecha Final</div>
+			<div class="modal-footer">
+				<button type="button" class="mt-4 px-3 py-2 btn btn-primary btn-modal-custom" id="okButtonError">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white" width="16" height="16">
+						<path d="M5.22 7.47a.749.749 0 0 0 0 1.06l3.75 3.75a.749.749 0 1 0 1.06-1.06L7.561 8.75h6.689a.75.75 0 0 0 0-1.5H7.561l2.469-2.47a.749.749 0 1 0-1.06-1.06L5.22 7.47ZM3 3.75a.75.75 0 0 0-1.5 0v8.5a.75.75 0 0 0 1.5 0v-8.5Z"></path>
+					</svg> OK
 				</button>
 			</div>
 		</div>

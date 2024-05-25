@@ -49,7 +49,6 @@ if (isset($_FILES['file-datos']) && $_FILES['file-datos']['error'] === UPLOAD_ER
 				$response["message"] = "Error en la inserción: " . $e->getMessage();
 			}
 		}
-		// Cierra el archivo después de leer
 		fclose($file);
 	} else {
 	

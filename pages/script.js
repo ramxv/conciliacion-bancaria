@@ -503,22 +503,43 @@ function grabarArchivoAsistencia(e) {
 }
 
 function mostrarReporte(event) {
-	event.preventDefault(); // Evita el comportamiento predeterminado de envío del formulario
+	event.preventDefault();
 
-	var fechaDesde = document.getElementById('fecha-desde-input').value;
-	var fechaHasta = document.getElementById('fecha-hasta-input').value;
+	var fechaInicio = document.getElementById('fecha-desde-input').value;
+	var fechaFinal = document.getElementById('fecha-hasta-input').value;
 	var codigoMarcacion = document.getElementById('inputNombres').value;
 
-	// Abrir el reporte en una nueva ventana
-	var reporteUrl = `reporte.php?fecha-desde=${fechaDesde}&fecha-hasta=${fechaHasta}&codigo-marcacion=${codigoMarcacion}`;
-	window.open(reporteUrl, '_blank');
+	if (Date.parse(fechaInicio) <= Date.parse(fechaFinal)) {
+		var reporteUrl = `reporte.php?fecha-desde=${fechaInicio}&fecha-hasta=${fechaFinal}&codigo-marcacion=${codigoMarcacion}`;
+		window.open(reporteUrl, '_blank');
+	} else {
+		mostrarModalError();
+	}
+
+	
 }
 
 function mostrarModalEsperar() {
+	const okButton = document.getElementById("okButtonEsperar");
 	var modalEsperando = new bootstrap.Modal(
 		document.getElementById("modalEsperando")
 	);
 	modalEsperando.show();
+	okButton.addEventListener("click", function () {
+		modalEsperando.hide();
+	});
+}
+
+function mostrarModalError(){
+	const form = document.getElementById("form-reporte");
+	const okButton = document.getElementById("okButtonError");
+	var modalError = new bootstrap.Modal(
+		document.getElementById("modalError")
+	);
+	modalError.show();
+	okButton.addEventListener("click", function () {
+		modalError.hide();
+	});
 }
 
 // ! ========================================		Sección Funciones	Complementarias		==============================================
