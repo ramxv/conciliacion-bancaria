@@ -13,15 +13,17 @@ function sendAjaxRequest(url, method, data, onSuccess, onError) {
   fetch(url, {
     method: method,
     body: data instanceof FormData ? data : JSON.stringify(data),
-    headers: data instanceof FormData ? {} : {
-      'Content-Type': 'application/json'
-    }
+    headers:
+      data instanceof FormData
+        ? {}
+        : {
+            "Content-Type": "application/json",
+          },
   })
-  .then(response => response.json())
-  .then(data => onSuccess(data))
-  .catch(error => onError(error));
+    .then((response) => response.json())
+    .then((data) => onSuccess(data))
+    .catch((error) => onError(error));
 }
-
 
 // ! ======================================== 			Sección de Grabar Cheque 						==============================================
 
@@ -36,23 +38,23 @@ function grabarCheques(event) {
     "logica_cheque.php",
     "POST",
     form_data,
-    function(response) {
+    function (response) {
       if (response.success) {
         $(".error-container").html(
           '<div class="alert alert-success" role="alert">' +
-          response.mensaje +
-          "</div>"
+            response.mensaje +
+            "</div>"
         );
       } else {
         console.error("Error en el servidor:", response.error);
         $(".error-container").html(
           '<div class="alert alert-danger" role="alert">' +
-          response.error +
-          "</div>"
+            response.error +
+            "</div>"
         );
       }
     },
-    function(error) {
+    function (error) {
       console.error("Error al enviar la solicitud:", error);
       $(".error-container").html(
         '<div class="alert alert-danger" role="alert">Error al enviar la solicitud</div>'
@@ -60,7 +62,6 @@ function grabarCheques(event) {
     }
   );
 }
-
 
 // * Función para validar el número del cheque
 // Función para validar el número del cheque
@@ -71,24 +72,24 @@ function validarNumCheque() {
       "logica_cheque.php",
       "POST",
       { numCheque: numCheque },
-      function(response) {
+      function (response) {
         if (response.successNumCk) {
           $(".error-container").html(
             '<div class="alert alert-success" role="alert">' +
-            response.mensajeNumCk +
-            "</div>"
+              response.mensajeNumCk +
+              "</div>"
           );
           enableFields();
         } else {
           $(".error-container").html(
             '<div class="alert alert-danger" role="alert"> ' +
-            response.mensajeNumCk +
-            " </div>"
+              response.mensajeNumCk +
+              " </div>"
           );
           disableFields();
         }
       },
-      function(error) {
+      function (error) {
         console.error("Error al conectar con el servidor:", error);
         $(".error-container").html(
           '<div class="alert alert-danger" role="alert">Error al conectar con el servidor</div>'
@@ -103,7 +104,6 @@ function validarNumCheque() {
     disableFields();
   }
 }
-
 
 // ! ======================================== 			Sección Anulación de Cheque 				==============================================
 // * Función para grabar Anulación
@@ -503,43 +503,63 @@ function grabarArchivoAsistencia(e) {
 }
 
 function mostrarReporte(event) {
-	event.preventDefault();
+  event.preventDefault();
 
-	var fechaInicio = document.getElementById('fecha-desde-input').value;
-	var fechaFinal = document.getElementById('fecha-hasta-input').value;
-	var codigoMarcacion = document.getElementById('inputNombres').value;
+  var fechaInicio = document.getElementById("fecha-desde-input").value;
+  var fechaFinal = document.getElementById("fecha-hasta-input").value;
+  var codigoMarcacion = document.getElementById("inputNombres").value;
 
-	if (Date.parse(fechaInicio) <= Date.parse(fechaFinal)) {
-		var reporteUrl = `reporte.php?fecha-desde=${fechaInicio}&fecha-hasta=${fechaFinal}&codigo-marcacion=${codigoMarcacion}`;
-		window.open(reporteUrl, '_blank');
-	} else {
-		mostrarModalError();
-	}
+  if (Date.parse(fechaInicio) <= Date.parse(fechaFinal)) {
+    var reporteUrl = `reporte.php?fecha-desde=${fechaInicio}&fecha-hasta=${fechaFinal}&codigo-marcacion=${codigoMarcacion}`;
+    window.open(reporteUrl, "_blank");
+  } else {
+    mostrarModalError();
+  }
+}
 
-	
+function consultarReporte(evento) {
+  evento.preventDefault();
+
+  const form = document.getElementById("form-reporte");
+  const formData = new FormData(form);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "logica_consultarReporte.php", true);
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      document.getElementById("consulta-reporte").innerHTML = xhr.responseText;
+    } else {
+      alert("Error al buscar los reportes");
+    }
+  };
+
+  xhr.onerror = function () {
+    alert("Error de red");
+  };
+
+  xhr.send(formData);
 }
 
 function mostrarModalEsperar() {
-	const okButton = document.getElementById("okButtonEsperar");
-	var modalEsperando = new bootstrap.Modal(
-		document.getElementById("modalEsperando")
-	);
-	modalEsperando.show();
-	okButton.addEventListener("click", function () {
-		modalEsperando.hide();
-	});
+  const okButton = document.getElementById("okButtonEsperar");
+  var modalEsperando = new bootstrap.Modal(
+    document.getElementById("modalEsperando")
+  );
+  modalEsperando.show();
+  okButton.addEventListener("click", function () {
+    modalEsperando.hide();
+  });
 }
 
-function mostrarModalError(){
-	const form = document.getElementById("form-reporte");
-	const okButton = document.getElementById("okButtonError");
-	var modalError = new bootstrap.Modal(
-		document.getElementById("modalError")
-	);
-	modalError.show();
-	okButton.addEventListener("click", function () {
-		modalError.hide();
-	});
+function mostrarModalError() {
+  const form = document.getElementById("form-reporte");
+  const okButton = document.getElementById("okButtonError");
+  var modalError = new bootstrap.Modal(document.getElementById("modalError"));
+  modalError.show();
+  okButton.addEventListener("click", function () {
+    modalError.hide();
+  });
 }
 
 // ! ========================================		Sección Funciones	Complementarias		==============================================
