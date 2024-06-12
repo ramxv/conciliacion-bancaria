@@ -27,41 +27,56 @@ $apellido = $resultado['apellido1'];
 ?>
 <h4><?php echo "Reporte de: " . htmlspecialchars($nombre) . " " . htmlspecialchars($apellido); ?></h4>
 <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-    th {
-        font-weight: bold;
-        background-color: #f4f4f4;
-    }
-    tr:hover {
-        background-color: #f1f1f1;
-    }
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 20px 0;
+	}
+
+	.table-container {
+		width: 100%;
+		max-height: 600px;
+		/* Puedes ajustar esta altura según tus necesidades */
+		overflow-x: auto;
+		overflow-y: auto;
+		margin: 20px 0;
+	}
+
+	th,
+	td {
+		padding: 12px;
+		text-align: left;
+		border-bottom: 1px solid #ddd;
+	}
+
+	th {
+		font-weight: bold;
+		background-color: #f4f4f4;
+	}
+
+	tr:hover {
+		background-color: #f1f1f1;
+	}
 </style>
-<table>
-    <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Día</th>
-            <th>Hora Mínima</th>
-            <th>Hora Máxima</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($datos as $fila): ?> 
-            <tr>
-                <td><?php echo htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))); ?></td>
-                <td><?php echo htmlspecialchars($fila['dia']); ?></td>
-                <td><?php echo htmlspecialchars($fila['min_hora']); ?></td>
-                <td><?php echo htmlspecialchars($fila['max_hora']); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<div class="table-container">
+	<table>
+		<thead>
+			<tr>
+				<th>Fecha</th>
+				<th>Día</th>
+				<th>Hora Mínima</th>
+				<th>Hora Máxima</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($datos as $fila) : ?>
+				<tr>
+					<td><?php echo htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))); ?></td>
+					<td><?php echo htmlspecialchars($fila['dia']); ?></td>
+					<td><?php echo htmlspecialchars($fila['min_hora']); ?></td>
+					<td><?php echo htmlspecialchars($fila['max_hora']); ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+</div>
